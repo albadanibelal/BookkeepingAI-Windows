@@ -35,6 +35,14 @@ export default {
     const anthropicURL = ANTHROPIC_BASE + url.pathname;
 
     // Clone the request headers, inject the API key
+    // Debug: check if secret is loaded
+    if (!env.ANTHROPIC_API_KEY) {
+      return new Response(JSON.stringify({ error: 'ANTHROPIC_API_KEY secret is not set in Cloudflare' }), {
+        status: 500,
+        headers: { ...CORS_HEADERS, 'Content-Type': 'application/json' },
+      });
+    }
+
     const headers = new Headers(request.headers);
     headers.set('x-api-key', env.ANTHROPIC_API_KEY);
     headers.delete('x-app-token'); // Don't forward app token to Anthropic
