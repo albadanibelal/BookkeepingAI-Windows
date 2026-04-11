@@ -73,13 +73,12 @@ You can also type any bookkeeping question in the message box below.
 
         setUploadedFiles((prev) => [...prev, file]);
 
-        // Upload in background
+        // Upload to Files API (works via proxy in browser, directly in Electron)
         (async () => {
           try {
             let uploadData = file.data;
             let uploadMime = file.mimeType;
 
-            // Compress images
             if (file.mimeType.startsWith('image/')) {
               const compressed = await anthropicService.compressImage(file.data);
               if (compressed) {
@@ -101,16 +100,12 @@ You can also type any bookkeeping question in the message box below.
               )
             );
           } catch (error: any) {
-            setUploadedFiles((prev) => prev.filter((f) => f.id !== file.id));
-            setMessages((prev) => [
-              ...prev,
-              {
-                id: genId(),
-                role: 'assistant',
-                content: `Could not upload **"${file.name}"**: ${error.message}\n\nPlease try attaching it again.`,
-                timestamp: new Date(),
-              },
-            ]);
+            // Fall back to base64 inline (no fileId, will use base64 in fileToContent)
+            setUploadedFiles((prev) =>
+              prev.map((f) =>
+                f.id === file.id ? { ...f, isUploading: false } : f
+              )
+            );
           }
         })();
       }
@@ -207,28 +202,17 @@ You can also type any bookkeeping question in the message box below.
         },
       ]);
 
-      const structurePrompt = `Convert the following Profit & Loss report into a JSON object. Return ONLY valid JSON, no markdown fences, no prose.
+      const structurePrompt = `Convert the following Profit & Loss report into a JSON object. Return ONLY valid JSON, no markdown fences, no explanation.
 
-Required format:
-{
-  "businessName": "string or 'My Business' if unknown",
-  "period": "string e.g. 'January – March 2025'",
-  "revenue": [{"category":"string","items":[{"description":"string","amount":0.00,"date":"string"}]}],
-  "cogs": [{"category":"string","items":[{"description":"string","amount":0.00,"date":"string"}]}],
-  "operatingExpenses": [{"category":"string","items":[{"description":"string","amount":0.00,"date":"string"}]}],
-  "totalRevenue": 0.00,
-  "totalCOGS": 0.00,
-  "totalOpex": 0.00,
-  "grossProfit": 0.00,
-  "netIncome": 0.00,
-  "notes": ["string"],
-  "sourceDocuments": ["string"]
-}
+IMPORTANT: Keep descriptions SHORT (max 40 chars each). Combine similar small items. This must fit in one response.
+
+Required JSON format:
+{"businessName":"string","period":"string","revenue":[{"category":"string","items":[{"description":"string","amount":0.00,"date":"string"}]}],"cogs":[{"category":"string","items":[{"description":"string","amount":0.00,"date":"string"}]}],"operatingExpenses":[{"category":"string","items":[{"description":"string","amount":0.00,"date":"string"}]}],"totalRevenue":0.00,"totalCOGS":0.00,"totalOpex":0.00,"grossProfit":0.00,"netIncome":0.00,"notes":["string"],"sourceDocuments":["string"]}
 
 P&L Report:
 ${markdown}
 
-Source files processed: ${sourceFiles.join(', ')}`;
+Source files: ${sourceFiles.join(', ')}`;
 
       let attempt = 0;
       const maxAttempts = 3;
@@ -238,9 +222,9 @@ Source files processed: ${sourceFiles.join(', ')}`;
         try {
           const jsonReply = await anthropicService.sendMessage(
             [{ role: 'user', content: [{ type: 'text', text: structurePrompt }] }],
-            'You are a JSON converter. Return only valid JSON.',
+            'You are a JSON converter. Return ONLY valid JSON. No markdown. No explanation. Keep descriptions under 40 characters.',
             effectiveAPIKey,
-            4096
+            8192
           );
 
           let clean = jsonReply
@@ -253,6 +237,24 @@ Source files processed: ${sourceFiles.join(', ')}`;
           if (startIdx !== -1 && endIdx !== -1) {
             clean = clean.substring(startIdx, endIdx + 1);
           }
+
+          // Fix common JSON truncation issues
+          // Balance unclosed brackets/braces
+          let openBraces = 0, openBrackets = 0;
+          let inString = false, escape = false;
+          for (const ch of clean) {
+            if (escape) { escape = false; continue; }
+            if (ch === '\\') { escape = true; continue; }
+            if (ch === '"') { inString = !inString; continue; }
+            if (inString) continue;
+            if (ch === '{') openBraces++;
+            if (ch === '}') openBraces--;
+            if (ch === '[') openBrackets++;
+            if (ch === ']') openBrackets--;
+          }
+          // Close any unclosed structures
+          for (let i = 0; i < openBrackets; i++) clean += ']';
+          for (let i = 0; i < openBraces; i++) clean += '}';
 
           const report: PnLReport = JSON.parse(clean);
           const pdfBase64 = generatePDF(report);
@@ -330,10 +332,23 @@ Source files processed: ${sourceFiles.join(', ')}`;
       { id: genId(), role: 'user', content: displayText, timestamp: new Date() },
     ]);
 
+    // Show progress while analyzing
+    const analyzeProgressId = genId();
+    setMessages((prev) => [
+      ...prev,
+      {
+        id: analyzeProgressId,
+        role: 'assistant',
+        content: `Analyzing ${files.length} document(s)... this may take a minute.`,
+        timestamp: new Date(),
+        isProgress: true,
+      },
+    ]);
+
     try {
       const defaultPrompt = files.length === 1
-        ? 'Extract all financial data from this document and generate a complete P&L report.'
-        : `Extract all financial data from these ${files.length} documents and generate a complete P&L report.`;
+        ? 'Extract all financial data from this document and generate a complete Profit & Loss report. Include Total Revenue, Total COGS, Gross Profit, Total Operating Expenses, and Net Income. Output the full report in a single response.'
+        : `Extract all financial data from these ${files.length} documents and generate a complete Profit & Loss report. Include Total Revenue, Total COGS, Gross Profit, Total Operating Expenses, and Net Income. Output the full report in a single response.`;
       const prompt = userText || defaultPrompt;
 
       if (files.length === 1) {
@@ -353,28 +368,18 @@ Source files processed: ${sourceFiles.join(', ')}`;
           role: 'assistant',
           content: [{ type: 'text', text: reply }],
         });
-        setMessages((prev) => [
-          ...prev,
-          { id: genId(), role: 'assistant', content: reply, timestamp: new Date() },
-        ]);
+        setMessages((prev) => {
+          const filtered = prev.filter((m) => m.id !== analyzeProgressId);
+          return [
+            ...filtered,
+            { id: genId(), role: 'assistant', content: reply, timestamp: new Date() },
+          ];
+        });
 
-        if (looksLikePnLReport(reply)) {
-          handleGeneratePDF(reply, [files[0].name]);
-        }
+        // Always attempt PDF generation after document processing
+        handleGeneratePDF(reply, [files[0].name]);
       } else {
         // Multiple files
-        const progressId = genId();
-        setMessages((prev) => [
-          ...prev,
-          {
-            id: progressId,
-            role: 'assistant',
-            content: `Analyzing ${files.length} documents...`,
-            timestamp: new Date(),
-            isProgress: true,
-          },
-        ]);
-
         const allContent: AnthropicContent[] = [];
         for (const file of files) {
           allContent.push(...fileToContent(file));
@@ -394,20 +399,19 @@ Source files processed: ${sourceFiles.join(', ')}`;
         });
 
         setMessages((prev) => {
-          const filtered = prev.filter((m) => m.id !== progressId);
+          const filtered = prev.filter((m) => m.id !== analyzeProgressId);
           return [
             ...filtered,
             { id: genId(), role: 'assistant', content: reply, timestamp: new Date() },
           ];
         });
 
-        if (looksLikePnLReport(reply)) {
-          handleGeneratePDF(reply, files.map((f) => f.name));
-        }
+        // Always attempt PDF generation after document processing
+        handleGeneratePDF(reply, files.map((f) => f.name));
       }
     } catch (error: any) {
       setMessages((prev) => [
-        ...prev,
+        ...prev.filter((m) => m.id !== analyzeProgressId),
         {
           id: genId(),
           role: 'assistant',

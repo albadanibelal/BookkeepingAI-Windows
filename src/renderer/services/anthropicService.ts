@@ -5,7 +5,9 @@ import type {
   FileUploadResponse,
 } from '../types';
 
-const BASE_URL = 'https://api.anthropic.com/v1';
+// In browser dev mode, use Vite proxy to avoid CORS. In Electron, call API directly.
+const isElectron = typeof window !== 'undefined' && !!(window as any).electronAPI;
+const BASE_URL = isElectron ? 'https://api.anthropic.com/v1' : '/api/anthropic/v1';
 const API_VERSION = '2023-06-01';
 const MODEL = 'claude-sonnet-4-6';
 
@@ -15,7 +17,7 @@ export class AnthropicService {
     messages: AnthropicMessage[],
     systemPrompt: string,
     apiKey: string,
-    maxTokens = 8192
+    maxTokens = 16384
   ): Promise<string> {
     const body: AnthropicRequest = {
       model: MODEL,

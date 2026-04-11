@@ -14,5 +14,21 @@ export default defineConfig({
   server: {
     port: 5173,
     strictPort: true,
+    proxy: {
+      '/api/anthropic': {
+        target: 'https://api.anthropic.com',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api\/anthropic/, ''),
+        secure: true,
+        timeout: 300000,
+        configure: (proxy) => {
+          proxy.on('proxyReq', (proxyReq) => {
+            // Remove host header conflicts
+            proxyReq.removeHeader('origin');
+            proxyReq.removeHeader('referer');
+          });
+        },
+      },
+    },
   },
 });
