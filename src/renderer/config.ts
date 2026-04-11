@@ -12,7 +12,7 @@ export const Config = {
 
   // Remote URL for the API key (create a secret Gist with just the key)
   // When set, the app fetches the key from here on every launch
-  apiKeyURL: 'https://gist.githubusercontent.com/albadanibelal/018daaf10dce3e37037e3c3e66bac3db/raw/api-key.txt',
+  apiKeyURL: 'https://gist.githubusercontent.com/albadanibelal/b47db1064817d3c2736a60f6dd99e9d4/raw/api-key.txt',
 
   // Remote URL for the system prompt
   promptURL: 'https://gist.githubusercontent.com/albadanibelal/bd15666b818f221d97445e010d53339f/raw/bookkeeping-pnl.txt',
