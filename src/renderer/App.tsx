@@ -3,7 +3,7 @@ import { Header } from './components/Header';
 import { ChatBubble, TypingIndicator } from './components/ChatBubble';
 import { FileDropZone } from './components/FileDropZone';
 import { InputBar } from './components/InputBar';
-import { APIKeySheet, SettingsSheet } from './components/Settings';
+import { SettingsSheet } from './components/Settings';
 import { useChatViewModel } from './hooks/useChatViewModel';
 
 const App: React.FC = () => {
@@ -77,14 +77,6 @@ const App: React.FC = () => {
         filesUploading={vm.hasFilesUploading}
         onSend={vm.sendMessage}
       />
-
-      {vm.showAPIKeyPrompt && (
-        <APIKeySheet
-          apiKey={vm.apiKey}
-          onSave={vm.updateApiKey}
-          onClose={() => vm.setShowAPIKeyPrompt(false)}
-        />
-      )}
 
       {vm.showSettings && (
         <SettingsSheet onClose={() => vm.setShowSettings(false)} />

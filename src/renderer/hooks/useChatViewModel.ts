@@ -1,7 +1,7 @@
 import { useState, useCallback, useRef, useEffect } from 'react';
 import type { ChatMessage, UploadedFile, AnthropicMessage, AnthropicContent } from '../types';
 import { getMimeType } from '../types';
-import { Config, getSystemPrompt, getAPIKey } from '../config';
+import { Config, getSystemPrompt } from '../config';
 import { anthropicService } from '../services/anthropicService';
 import { generatePDF } from '../services/pdfGenerator';
 import type { PnLReport } from '../types';
@@ -18,25 +18,14 @@ export function useChatViewModel() {
   const [isSending, setIsSending] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
   const [showAPIKeyPrompt, setShowAPIKeyPrompt] = useState(false);
-  const [apiKey, setApiKey] = useState(() => localStorage.getItem('anthropicAPIKey') ?? '');
-  const [resolvedAPIKey, setResolvedAPIKey] = useState('');
 
   const conversationHistory = useRef<AnthropicMessage[]>([]);
 
-  // Fetch API key from remote on mount
-  useEffect(() => {
-    getAPIKey().then((key) => setResolvedAPIKey(key));
-  }, []);
-
-  const effectiveAPIKey = resolvedAPIKey || apiKey;
+  // API key is handled by Cloudflare proxy — app just needs a placeholder
+  const effectiveAPIKey = 'proxy-managed';
 
   const hasFilesUploading = uploadedFiles.some((f) => f.isUploading);
 
-  // Persist API key
-  const updateApiKey = useCallback((key: string) => {
-    setApiKey(key);
-    localStorage.setItem('anthropicAPIKey', key);
-  }, []);
 
   // Initialize with greeting
   const onAppear = useCallback(() => {
@@ -57,10 +46,7 @@ You can also type any bookkeeping question in the message box below.
       },
     ]);
 
-    if (!effectiveAPIKey) {
-      setShowAPIKeyPrompt(true);
-    }
-  }, [effectiveAPIKey]);
+  }, []);
 
   // Add files
   const addFiles = useCallback(
@@ -318,10 +304,6 @@ Source files: ${sourceFiles.join(', ')}`;
 
   // Core function to process files and send to API
   const sendMessageWithFiles = useCallback(async (files: UploadedFile[], userText = '') => {
-    if (!effectiveAPIKey) {
-      setShowAPIKeyPrompt(true);
-      return;
-    }
 
     setIsSending(true);
     setUploadedFiles([]);
@@ -434,10 +416,6 @@ Source files: ${sourceFiles.join(', ')}`;
   const sendMessage = useCallback(async () => {
     const text = inputText.trim();
     if (!text && uploadedFiles.length === 0) return;
-    if (!effectiveAPIKey) {
-      setShowAPIKeyPrompt(true);
-      return;
-    }
 
     if (uploadedFiles.length > 0) {
       // If there are files, use the file processing path
@@ -521,11 +499,6 @@ Source files: ${sourceFiles.join(', ')}`;
     isSending,
     showSettings,
     setShowSettings,
-    showAPIKeyPrompt,
-    setShowAPIKeyPrompt,
-    apiKey,
-    updateApiKey,
-    effectiveAPIKey,
     hasFilesUploading,
     onAppear,
     addFiles,
