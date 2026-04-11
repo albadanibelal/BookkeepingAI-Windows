@@ -1,39 +1,71 @@
-// The prompt is fetched from a remote URL so you can update it once
-// and all customer apps pick up the change automatically.
-// To use: create a GitHub Gist with your prompt, click "Raw", and paste the URL below.
+// Remote configuration — update once, all customer apps pick up changes automatically.
 //
-// How to set up:
-//   1. Go to https://gist.github.com
-//   2. Create a new secret gist with the contents of prompt/bookkeeper-pnl.md
-//   3. Click "Raw" on the gist
-//   4. Copy the URL (remove the commit hash to always get latest):
-//      https://gist.githubusercontent.com/YOUR_USERNAME/GIST_ID/raw/bookkeeper-pnl.md
-//   5. Paste it as PROMPT_URL below
+// Setup:
+//   1. Create a secret Gist with your API key (just the key, nothing else)
+//   2. Click "Raw", remove the commit hash from the URL
+//   3. Paste as apiKeyURL below
+//   4. Do the same for your prompt (already done)
 
 export const Config = {
-  anthropicAPIKey: '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',
+  // Fallback API key — used if remote fetch fails
+  fallbackAPIKey: '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',
 
-  // Remote URL for the system prompt (set this to your Gist raw URL)
-  // Leave empty to use the bundled fallback prompt
+  // Remote URL for the API key (create a secret Gist with just the key)
+  // When set, the app fetches the key from here on every launch
+  apiKeyURL: '',
+
+  // Remote URL for the system prompt
   promptURL: 'https://gist.githubusercontent.com/albadanibelal/bd15666b818f221d97445e010d53339f/raw/bookkeeping-pnl.txt',
 
-  // Bundled fallback prompt file path (relative to app root, loaded via fetch)
+  // Bundled fallback prompt file
   fallbackPromptPath: './bookkeeper-pnl.md',
 };
 
-// Fetches the system prompt from remote URL, falls back to bundled file
+// ---- API Key (remote-controlled) ----
+
+let cachedAPIKey: string | null = null;
+
+export async function getAPIKey(): Promise<string> {
+  if (cachedAPIKey) return cachedAPIKey;
+
+  // Try remote URL first
+  if (Config.apiKeyURL) {
+    try {
+      const response = await fetch(Config.apiKeyURL, { cache: 'no-cache' });
+      if (response.ok) {
+        const key = (await response.text()).trim();
+        if (key.startsWith('sk-')) {
+          cachedAPIKey = key;
+          console.log('API key loaded from remote URL');
+          return cachedAPIKey;
+        }
+      }
+    } catch (err) {
+      console.warn('Failed to fetch remote API key, using fallback:', err);
+    }
+  }
+
+  // Fall back to hardcoded key
+  cachedAPIKey = Config.fallbackAPIKey;
+  return cachedAPIKey;
+}
+
+export function clearAPIKeyCache() {
+  cachedAPIKey = null;
+}
+
+// ---- System Prompt (remote-controlled) ----
+
 let cachedPrompt: string | null = null;
 
 export async function getSystemPrompt(): Promise<string> {
   if (cachedPrompt) return cachedPrompt;
 
-  // Try remote URL first
   if (Config.promptURL) {
     try {
       const response = await fetch(Config.promptURL, { cache: 'no-cache' });
       if (response.ok) {
         let text = await response.text();
-        // Strip YAML frontmatter if present (--- ... ---)
         text = stripFrontmatter(text);
         cachedPrompt = text;
         console.log('System prompt loaded from remote URL');
@@ -44,7 +76,6 @@ export async function getSystemPrompt(): Promise<string> {
     }
   }
 
-  // Fall back to bundled prompt file
   try {
     const response = await fetch(Config.fallbackPromptPath);
     if (response.ok) {
@@ -58,19 +89,16 @@ export async function getSystemPrompt(): Promise<string> {
     console.warn('Failed to load bundled prompt:', err);
   }
 
-  // Last resort: minimal inline prompt
   cachedPrompt = 'You are an expert bookkeeper. Analyze the uploaded financial documents and produce a detailed Profit & Loss report in markdown format. Categorize all items as Revenue, COGS, or Operating Expenses. Format dollar amounts as $X,XXX.XX.';
   console.warn('Using minimal fallback prompt');
   return cachedPrompt;
 }
 
-// Force re-fetch on next call (e.g., after settings change)
 export function clearPromptCache() {
   cachedPrompt = null;
 }
 
 function stripFrontmatter(text: string): string {
-  // Remove YAML frontmatter (--- ... ---) from skill files
   const match = text.match(/^---\s*\n[\s\S]*?\n---\s*\n([\s\S]*)$/);
   return match ? match[1].trim() : text.trim();
 }

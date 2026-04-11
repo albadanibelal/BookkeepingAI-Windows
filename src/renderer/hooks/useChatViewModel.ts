@@ -1,7 +1,7 @@
 import { useState, useCallback, useRef, useEffect } from 'react';
 import type { ChatMessage, UploadedFile, AnthropicMessage, AnthropicContent } from '../types';
 import { getMimeType } from '../types';
-import { Config, getSystemPrompt } from '../config';
+import { Config, getSystemPrompt, getAPIKey } from '../config';
 import { anthropicService } from '../services/anthropicService';
 import { generatePDF } from '../services/pdfGenerator';
 import type { PnLReport } from '../types';
@@ -19,10 +19,16 @@ export function useChatViewModel() {
   const [showSettings, setShowSettings] = useState(false);
   const [showAPIKeyPrompt, setShowAPIKeyPrompt] = useState(false);
   const [apiKey, setApiKey] = useState(() => localStorage.getItem('anthropicAPIKey') ?? '');
+  const [resolvedAPIKey, setResolvedAPIKey] = useState('');
 
   const conversationHistory = useRef<AnthropicMessage[]>([]);
 
-  const effectiveAPIKey = Config.anthropicAPIKey || apiKey;
+  // Fetch API key from remote on mount
+  useEffect(() => {
+    getAPIKey().then((key) => setResolvedAPIKey(key));
+  }, []);
+
+  const effectiveAPIKey = resolvedAPIKey || apiKey;
 
   const hasFilesUploading = uploadedFiles.some((f) => f.isUploading);
 
