@@ -10,7 +10,7 @@ export const Config = {
   // Cloudflare Worker proxy URL — set this after deploying the worker
   // Example: 'https://bookkeepingai-proxy.YOUR_SUBDOMAIN.workers.dev'
   // When set, ALL API calls go through the proxy (API key stays on server)
-  proxyURL: '',
+  proxyURL: 'https://it-ub.albadanibelal.workers.dev',
 
   // Optional app token for extra security (must match APP_TOKEN secret in Cloudflare)
   appToken: '',
