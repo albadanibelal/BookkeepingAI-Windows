@@ -7,11 +7,16 @@
 //   4. Do the same for your prompt (already done)
 
 export const Config = {
-  // Fallback API key — used if remote fetch fails
-  fallbackAPIKey: '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',
+  // Cloudflare Worker proxy URL — set this after deploying the worker
+  // Example: 'https://bookkeepingai-proxy.YOUR_SUBDOMAIN.workers.dev'
+  // When set, ALL API calls go through the proxy (API key stays on server)
+  proxyURL: '',
 
-  // Remote URL for the API key (create a secret Gist with just the key)
-  // When set, the app fetches the key from here on every launch
+  // Optional app token for extra security (must match APP_TOKEN secret in Cloudflare)
+  appToken: '',
+
+  // Fallback: direct API key (only used if proxyURL is empty)
+  fallbackAPIKey: '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',
   apiKeyURL: 'https://gist.githubusercontent.com/albadanibelal/b47db1064817d3c2736a60f6dd99e9d4/raw/api-key.txt',
 
   // Remote URL for the system prompt

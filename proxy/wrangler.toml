@@ -1,0 +1,11 @@
+name = "bookkeepingai-proxy"
+main = "worker.js"
+compatibility_date = "2024-01-01"
+
+# After deploying, add your API key as a secret:
+#   npx wrangler secret put ANTHROPIC_API_KEY
+#   (paste your key when prompted)
+#
+# Optional: add an app token for extra security:
+#   npx wrangler secret put APP_TOKEN
+#   (paste any random string, then set the same in your app's config)

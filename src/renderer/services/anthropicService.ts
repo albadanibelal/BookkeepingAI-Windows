@@ -4,12 +4,63 @@ import type {
   AnthropicResponse,
   FileUploadResponse,
 } from '../types';
+import { Config } from '../config';
 
-// In browser dev mode, use Vite proxy to avoid CORS. In Electron, call API directly.
-const isElectron = typeof window !== 'undefined' && !!(window as any).electronAPI;
-const BASE_URL = isElectron ? 'https://api.anthropic.com/v1' : '/api/anthropic/v1';
+const ANTHROPIC_DIRECT = 'https://api.anthropic.com/v1';
+const VITE_PROXY = '/api/anthropic/v1';
 const API_VERSION = '2023-06-01';
 const MODEL = 'claude-sonnet-4-6';
+
+function getBaseURL(): string {
+  // If Cloudflare proxy is configured, use it
+  if (Config.proxyURL) {
+    return Config.proxyURL.replace(/\/$/, '') + '/v1';
+  }
+  // In Electron, call Anthropic directly
+  const isElectron = typeof window !== 'undefined' && !!(window as any).electronAPI;
+  if (isElectron) return ANTHROPIC_DIRECT;
+  // In browser dev, use Vite proxy
+  return VITE_PROXY;
+}
+
+function getHeaders(apiKey: string): Record<string, string> {
+  const headers: Record<string, string> = {
+    'Content-Type': 'application/json',
+    'anthropic-version': API_VERSION,
+    'anthropic-beta': 'files-api-2025-04-14,pdfs-2024-09-25',
+  };
+
+  if (Config.proxyURL) {
+    // Using Cloudflare proxy — don't send API key, the proxy injects it
+    if (Config.appToken) {
+      headers['x-app-token'] = Config.appToken;
+    }
+  } else {
+    // Direct mode — send API key
+    headers['x-api-key'] = apiKey;
+    headers['anthropic-dangerous-direct-browser-access'] = 'true';
+  }
+
+  return headers;
+}
+
+function getUploadHeaders(apiKey: string): Record<string, string> {
+  const headers: Record<string, string> = {
+    'anthropic-version': API_VERSION,
+    'anthropic-beta': 'files-api-2025-04-14',
+  };
+
+  if (Config.proxyURL) {
+    if (Config.appToken) {
+      headers['x-app-token'] = Config.appToken;
+    }
+  } else {
+    headers['x-api-key'] = apiKey;
+    headers['anthropic-dangerous-direct-browser-access'] = 'true';
+  }
+
+  return headers;
+}
 
 export class AnthropicService {
   // Send messages to Claude
@@ -26,15 +77,9 @@ export class AnthropicService {
       messages,
     };
 
-    const response = await fetch(`${BASE_URL}/messages`, {
+    const response = await fetch(`${getBaseURL()}/messages`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': apiKey,
-        'anthropic-version': API_VERSION,
-        'anthropic-beta': 'files-api-2025-04-14,pdfs-2024-09-25',
-        'anthropic-dangerous-direct-browser-access': 'true',
-      },
+      headers: getHeaders(apiKey),
       body: JSON.stringify(body),
     });
 
@@ -61,7 +106,6 @@ export class AnthropicService {
     mimeType: string,
     apiKey: string
   ): Promise<string> {
-    // Convert base64 to blob
     const byteChars = atob(base64Data);
     const byteNumbers = new Array(byteChars.length);
     for (let i = 0; i < byteChars.length; i++) {
@@ -73,14 +117,9 @@ export class AnthropicService {
     const formData = new FormData();
     formData.append('file', blob, fileName);
 
-    const response = await fetch(`${BASE_URL}/files`, {
+    const response = await fetch(`${getBaseURL()}/files`, {
       method: 'POST',
-      headers: {
-        'x-api-key': apiKey,
-        'anthropic-version': API_VERSION,
-        'anthropic-beta': 'files-api-2025-04-14',
-        'anthropic-dangerous-direct-browser-access': 'true',
-      },
+      headers: getUploadHeaders(apiKey),
       body: formData,
     });
 
@@ -125,7 +164,6 @@ export class AnthropicService {
         }
         ctx.drawImage(img, 0, 0, w, h);
         const dataUrl = canvas.toDataURL('image/jpeg', quality);
-        // Strip "data:image/jpeg;base64," prefix
         resolve(dataUrl.split(',')[1] ?? null);
       };
       img.onerror = () => resolve(null);
