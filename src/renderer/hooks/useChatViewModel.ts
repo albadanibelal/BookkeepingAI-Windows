@@ -347,8 +347,8 @@ Source files: ${sourceFiles.join(', ')}`;
 
     try {
       const defaultPrompt = files.length === 1
-        ? 'Extract all financial data from this document and generate a complete Profit & Loss report. Include Total Revenue, Total COGS, Gross Profit, Total Operating Expenses, and Net Income. Output the full report in a single response.'
-        : `Extract all financial data from these ${files.length} documents and generate a complete Profit & Loss report. Include Total Revenue, Total COGS, Gross Profit, Total Operating Expenses, and Net Income. Output the full report in a single response.`;
+        ? 'Extract all financial data from this document and generate a complete Profit & Loss report. Split COGS into Taxable and Non-Taxable per CDTFA rules. Include Total Revenue, Taxable COGS subtotal, Non-Taxable COGS subtotal, Total COGS, Gross Profit, Total Operating Expenses, and Net Income. Output the full report in a single response.'
+        : `Extract all financial data from these ${files.length} documents and generate a complete Profit & Loss report. Split COGS into Taxable and Non-Taxable per CDTFA rules. Include Total Revenue, Taxable COGS subtotal, Non-Taxable COGS subtotal, Total COGS, Gross Profit, Total Operating Expenses, and Net Income. Output the full report in a single response.`;
       const prompt = userText || defaultPrompt;
 
       if (files.length === 1) {
