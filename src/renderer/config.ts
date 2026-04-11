@@ -3,7 +3,7 @@
 
 export const Config = {
   // Cloudflare Worker proxy — all API calls go through here
-  proxyURL: 'https://bookkeepingai-proxy.albadanibelal.workers.dev',
+  proxyURL: 'https://bookkeepingai-proxy-470863874819.us-west1.run.app',
 
   // Optional app token for extra security (must match APP_TOKEN secret in Cloudflare)
   appToken: '',

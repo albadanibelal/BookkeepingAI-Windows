@@ -4,3 +4,4 @@ release/
 .DS_Store
 *.log
 runner/BookkeepingAI
+google-cloud-sdk/
