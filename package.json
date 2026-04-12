@@ -22,8 +22,7 @@
     ],
     "win": {
       "target": ["nsis"],
-      "icon": "assets/icon.png",
-      "publisherName": "BookkeepingAI"
+      "icon": "assets/icon.png"
     },
     "nsis": {
       "oneClick": false,
