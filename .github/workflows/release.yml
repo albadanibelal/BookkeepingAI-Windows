@@ -1,7 +1,6 @@
 name: Release to Customers
 
-# Only runs when YOU manually create a release on GitHub.
-# This is what customers' apps check for updates against.
+# Click "Run workflow", enter version number, done. Customers get the update.
 on:
   workflow_dispatch:
     inputs:
@@ -44,10 +43,24 @@ jobs:
       - name: Build app
         run: npm run build
 
-      - name: Build & publish to GitHub Releases
-        run: npx electron-builder --win --publish always
+      - name: Build Windows installer
+        run: npx electron-builder --win
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Publish release (not draft)
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ github.event.inputs.version }}
+          name: BookkeepingAI v${{ github.event.inputs.version }}
+          draft: false
+          prerelease: false
+          files: |
+            release/*.exe
+            release/*.yml
+            release/*.blockmap
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Commit version bump
         shell: bash
