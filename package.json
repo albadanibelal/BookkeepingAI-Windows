@@ -1,6 +1,6 @@
 {
   "name": "bookkeepingai",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "BookkeepingAI — Profit & Loss report agent",
   "main": "electron/main.js",
   "scripts": {
@@ -21,7 +21,9 @@
       "electron/**/*"
     ],
     "win": {
-      "target": ["nsis"],
+      "target": [
+        "nsis"
+      ],
       "icon": "assets/icon.png"
     },
     "nsis": {
