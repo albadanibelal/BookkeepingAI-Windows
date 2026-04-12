@@ -1,6 +1,6 @@
 {
   "name": "bookkeepingai",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "BookkeepingAI — Profit & Loss report agent",
   "main": "electron/main.js",
   "scripts": {
@@ -22,12 +22,18 @@
     ],
     "win": {
       "target": ["nsis"],
-      "icon": "assets/icon.png"
+      "icon": "assets/icon.png",
+      "publisherName": "BookkeepingAI"
     },
     "nsis": {
       "oneClick": false,
       "perMachine": true,
       "allowToChangeInstallationDirectory": true
+    },
+    "publish": {
+      "provider": "github",
+      "owner": "albadanibelal",
+      "repo": "BookkeepingAI-Windows"
     }
   },
   "keywords": [],
@@ -35,6 +41,7 @@
   "license": "ISC",
   "type": "commonjs",
   "dependencies": {
+    "electron-updater": "^6.8.3",
     "jspdf": "^4.2.1",
     "react": "^19.2.5",
     "react-dom": "^19.2.5",

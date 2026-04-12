@@ -1,9 +1,9 @@
-name: Build Windows Installer
+name: Build & Release Windows App
 
 on:
   push:
     branches: [main]
-  workflow_dispatch: # allows manual trigger from GitHub UI
+  workflow_dispatch:
 
 jobs:
   build:
@@ -25,8 +25,8 @@ jobs:
       - name: Build app
         run: npm run build
 
-      - name: Build Windows installer
-        run: npx electron-builder --win
+      - name: Build & publish Windows installer
+        run: npx electron-builder --win --publish always
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -35,12 +35,4 @@ jobs:
         with:
           name: BookkeepingAI-Windows-Installer
           path: release/*.exe
-          retention-days: 30
-
-      - name: Upload portable artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: BookkeepingAI-Windows-Portable
-          path: release/*.zip
-          if-no-files-found: ignore
           retention-days: 30

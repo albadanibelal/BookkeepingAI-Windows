@@ -1,8 +1,46 @@
 const { app, BrowserWindow, ipcMain, dialog, Menu, shell } = require('electron');
+const { autoUpdater } = require('electron-updater');
 const path = require('path');
 const fs = require('fs');
 
 let mainWindow = null;
+
+// ---- Auto-Update ----
+
+function setupAutoUpdater() {
+  autoUpdater.autoDownload = true;
+  autoUpdater.autoInstallOnAppQuit = true;
+
+  autoUpdater.on('update-available', () => {
+    if (mainWindow) {
+      mainWindow.webContents.executeJavaScript(
+        `document.title = 'BookkeepingAI — Downloading update...'`
+      );
+    }
+  });
+
+  autoUpdater.on('update-downloaded', () => {
+    dialog.showMessageBox(mainWindow, {
+      type: 'info',
+      title: 'Update Ready',
+      message: 'A new version of BookkeepingAI has been downloaded. Restart now to update?',
+      buttons: ['Restart', 'Later'],
+    }).then((result) => {
+      if (result.response === 0) {
+        autoUpdater.quitAndInstall();
+      }
+    });
+  });
+
+  autoUpdater.on('error', (err) => {
+    console.log('Auto-update error:', err.message);
+  });
+
+  // Check for updates (silently)
+  autoUpdater.checkForUpdatesAndNotify();
+}
+
+// ---- Menu ----
 
 function createMenu() {
   const template = [
@@ -44,6 +82,12 @@ function createMenu() {
             shell.openExternal('https://belal-albadani-portfolio-470863874819.us-west1.run.app/#about');
           },
         },
+        {
+          label: 'Check for Updates',
+          click: () => {
+            autoUpdater.checkForUpdatesAndNotify();
+          },
+        },
       ],
     },
   ];
@@ -51,6 +95,8 @@ function createMenu() {
   const menu = Menu.buildFromTemplate(template);
   Menu.setApplicationMenu(menu);
 }
+
+// ---- Window ----
 
 function createWindow() {
   mainWindow = new BrowserWindow({
@@ -82,6 +128,10 @@ function createWindow() {
 app.whenReady().then(() => {
   createMenu();
   createWindow();
+  // Only check for updates in production
+  if (app.isPackaged) {
+    setupAutoUpdater();
+  }
 });
 
 app.on('window-all-closed', () => {
