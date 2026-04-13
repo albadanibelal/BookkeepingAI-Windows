@@ -197,9 +197,10 @@ You can also type any bookkeeping question in the message box below.
       const structurePrompt = `Convert the following Profit & Loss report into a JSON object. Return ONLY valid JSON, no markdown fences, no explanation.
 
 IMPORTANT: Keep descriptions SHORT (max 40 chars each). Combine similar small items. This must fit in one response.
+IMPORTANT: Split COGS into taxableCOGS and nonTaxableCOGS arrays per CDTFA rules. Also include totalTaxableCOGS and totalNonTaxableCOGS subtotals. The "cogs" field should contain ALL COGS items (both taxable and non-taxable combined).
 
 Required JSON format:
-{"businessName":"string","period":"string","revenue":[{"category":"string","items":[{"description":"string","amount":0.00,"date":"string"}]}],"cogs":[{"category":"string","items":[{"description":"string","amount":0.00,"date":"string"}]}],"operatingExpenses":[{"category":"string","items":[{"description":"string","amount":0.00,"date":"string"}]}],"totalRevenue":0.00,"totalCOGS":0.00,"totalOpex":0.00,"grossProfit":0.00,"netIncome":0.00,"notes":["string"],"sourceDocuments":["string"]}
+{"businessName":"string","period":"string","revenue":[{"category":"string","items":[{"description":"string","amount":0.00,"date":"string"}]}],"taxableCOGS":[{"category":"string","items":[{"description":"string","amount":0.00,"date":"string"}]}],"nonTaxableCOGS":[{"category":"string","items":[{"description":"string","amount":0.00,"date":"string"}]}],"cogs":[{"category":"string","items":[{"description":"string","amount":0.00,"date":"string"}]}],"operatingExpenses":[{"category":"string","items":[{"description":"string","amount":0.00,"date":"string"}]}],"totalRevenue":0.00,"totalTaxableCOGS":0.00,"totalNonTaxableCOGS":0.00,"totalCOGS":0.00,"totalOpex":0.00,"grossProfit":0.00,"netIncome":0.00,"notes":["string"],"sourceDocuments":["string"]}
 
 P&L Report:
 ${markdown}

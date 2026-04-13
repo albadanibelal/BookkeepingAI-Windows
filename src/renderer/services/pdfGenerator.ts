@@ -86,11 +86,17 @@ export function generatePDF(report: PnLReport): string | null {
     // --- Summary Cards ---
     const totalExpenses = (report.totalCOGS ?? 0) + (report.totalOpex ?? 0);
     const netIncome = report.netIncome ?? 0;
-    const cardWidth = (CONTENT_WIDTH - 16) / 3;
+    const hasTaxSplit = (report.totalTaxableCOGS != null) || (report.totalNonTaxableCOGS != null);
+    const cardCount = hasTaxSplit ? 5 : 3;
+    const cardWidth = (CONTENT_WIDTH - 8 * (cardCount - 1)) / cardCount;
     const cardHeight = 52;
 
     const cards: Array<{ label: string; value: number; color: readonly [number, number, number] }> = [
       { label: 'TOTAL REVENUE', value: report.totalRevenue ?? 0, color: GREEN },
+      ...(hasTaxSplit ? [
+        { label: 'TAXABLE COGS', value: report.totalTaxableCOGS ?? 0, color: RED as readonly [number, number, number] },
+        { label: 'NON-TAX COGS', value: report.totalNonTaxableCOGS ?? 0, color: GREEN as readonly [number, number, number] },
+      ] : []),
       { label: 'TOTAL EXPENSES', value: totalExpenses, color: RED },
       { label: 'NET INCOME', value: netIncome, color: netIncome >= 0 ? GREEN : RED },
     ];
@@ -105,15 +111,15 @@ export function generatePDF(report: PnLReport): string | null {
 
       // Label
       doc.setFont('helvetica', 'normal');
-      doc.setFontSize(7.5);
+      doc.setFontSize(hasTaxSplit ? 6.5 : 7.5);
       doc.setTextColor(...GREY);
-      doc.text(card.label, x + 10, y + 18);
+      doc.text(card.label, x + 6, y + 18);
 
       // Value
       doc.setFont('helvetica', 'bold');
-      doc.setFontSize(14);
+      doc.setFontSize(hasTaxSplit ? 11 : 14);
       doc.setTextColor(...card.color);
-      doc.text(formatCurrency(card.value), x + 10, y + 40);
+      doc.text(formatCurrency(card.value), x + 6, y + 40);
     });
 
     y += cardHeight + 16;
@@ -208,7 +214,175 @@ export function generatePDF(report: PnLReport): string | null {
     }
 
     // --- COGS ---
-    if (report.cogs && report.cogs.length > 0) {
+    const hasTaxableSplit = (report.taxableCOGS && report.taxableCOGS.length > 0) ||
+                            (report.nonTaxableCOGS && report.nonTaxableCOGS.length > 0);
+
+    if (hasTaxableSplit) {
+      // Section title bar for COGS parent
+      checkPageBreak(40);
+      doc.setFillColor(...NAVY);
+      doc.rect(MARGIN, y, CONTENT_WIDTH, 18, 'F');
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(9);
+      doc.setTextColor(...WHITE);
+      doc.text('COST OF GOODS SOLD', MARGIN + 8, y + 13);
+      y += 22;
+
+      // Taxable COGS subsection
+      if (report.taxableCOGS && report.taxableCOGS.length > 0) {
+        checkPageBreak(24);
+        doc.setFillColor(254, 226, 226); // light red tint
+        doc.rect(MARGIN, y, CONTENT_WIDTH, 16, 'F');
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(8.5);
+        doc.setTextColor(185, 28, 28);
+        doc.text('TAXABLE COGS', MARGIN + 8, y + 12);
+        y += 18;
+
+        for (const cat of report.taxableCOGS) {
+          checkPageBreak(30);
+          const catTotal = (cat.items ?? []).reduce((sum, it) => sum + (it.amount ?? 0), 0);
+
+          doc.setFillColor(232, 240, 247);
+          doc.rect(MARGIN, y, CONTENT_WIDTH, 16, 'F');
+          doc.setFont('helvetica', 'bold');
+          doc.setFontSize(8.5);
+          doc.setTextColor(...NAVY);
+          doc.text(cat.category, MARGIN + 8, y + 12);
+          const catValStr = formatCurrency(catTotal);
+          const catValW = doc.getTextWidth(catValStr);
+          doc.text(catValStr, rightEdge - catValW, y + 12);
+          y += 18;
+
+          (cat.items ?? []).forEach((item, idx) => {
+            checkPageBreak(16);
+            if (idx % 2 === 0) {
+              doc.setFillColor(249, 249, 249);
+              doc.rect(MARGIN, y, CONTENT_WIDTH, 14, 'F');
+            }
+            const desc = item.description ?? '';
+            const truncated = desc.length > 60 ? desc.substring(0, 57) + '...' : desc;
+            doc.setFont('helvetica', 'normal');
+            doc.setFontSize(8);
+            doc.setTextColor(...DARK);
+            doc.text(`  ${item.date ?? ''}  ${truncated}`, MARGIN + 4, y + 10);
+            const amtStr = formatCurrency(item.amount ?? 0);
+            const amtW = doc.getTextWidth(amtStr);
+            doc.text(amtStr, rightEdge - amtW, y + 10);
+            y += 14;
+          });
+
+          doc.setDrawColor(...LGREY);
+          doc.setLineWidth(0.3);
+          doc.line(MARGIN, y, rightEdge, y);
+          y += 4;
+        }
+
+        // Taxable COGS subtotal
+        checkPageBreak(18);
+        doc.setFillColor(254, 226, 226);
+        doc.rect(MARGIN, y, CONTENT_WIDTH, 16, 'F');
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(8.5);
+        doc.setTextColor(185, 28, 28);
+        doc.text('Taxable COGS Subtotal', MARGIN + 8, y + 12);
+        const taxSubStr = formatCurrency(report.totalTaxableCOGS ?? 0);
+        const taxSubW = doc.getTextWidth(taxSubStr);
+        doc.text(taxSubStr, rightEdge - taxSubW, y + 12);
+        y += 22;
+      }
+
+      // Non-Taxable COGS subsection
+      if (report.nonTaxableCOGS && report.nonTaxableCOGS.length > 0) {
+        checkPageBreak(24);
+        doc.setFillColor(220, 252, 231); // light green tint
+        doc.rect(MARGIN, y, CONTENT_WIDTH, 16, 'F');
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(8.5);
+        doc.setTextColor(21, 128, 61);
+        doc.text('NON-TAXABLE COGS', MARGIN + 8, y + 12);
+        y += 18;
+
+        for (const cat of report.nonTaxableCOGS) {
+          checkPageBreak(30);
+          const catTotal = (cat.items ?? []).reduce((sum, it) => sum + (it.amount ?? 0), 0);
+
+          doc.setFillColor(232, 240, 247);
+          doc.rect(MARGIN, y, CONTENT_WIDTH, 16, 'F');
+          doc.setFont('helvetica', 'bold');
+          doc.setFontSize(8.5);
+          doc.setTextColor(...NAVY);
+          doc.text(cat.category, MARGIN + 8, y + 12);
+          const catValStr = formatCurrency(catTotal);
+          const catValW = doc.getTextWidth(catValStr);
+          doc.text(catValStr, rightEdge - catValW, y + 12);
+          y += 18;
+
+          (cat.items ?? []).forEach((item, idx) => {
+            checkPageBreak(16);
+            if (idx % 2 === 0) {
+              doc.setFillColor(249, 249, 249);
+              doc.rect(MARGIN, y, CONTENT_WIDTH, 14, 'F');
+            }
+            const desc = item.description ?? '';
+            const truncated = desc.length > 60 ? desc.substring(0, 57) + '...' : desc;
+            doc.setFont('helvetica', 'normal');
+            doc.setFontSize(8);
+            doc.setTextColor(...DARK);
+            doc.text(`  ${item.date ?? ''}  ${truncated}`, MARGIN + 4, y + 10);
+            const amtStr = formatCurrency(item.amount ?? 0);
+            const amtW = doc.getTextWidth(amtStr);
+            doc.text(amtStr, rightEdge - amtW, y + 10);
+            y += 14;
+          });
+
+          doc.setDrawColor(...LGREY);
+          doc.setLineWidth(0.3);
+          doc.line(MARGIN, y, rightEdge, y);
+          y += 4;
+        }
+
+        // Non-Taxable COGS subtotal
+        checkPageBreak(18);
+        doc.setFillColor(220, 252, 231);
+        doc.rect(MARGIN, y, CONTENT_WIDTH, 16, 'F');
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(8.5);
+        doc.setTextColor(21, 128, 61);
+        doc.text('Non-Taxable COGS Subtotal', MARGIN + 8, y + 12);
+        const ntSubStr = formatCurrency(report.totalNonTaxableCOGS ?? 0);
+        const ntSubW = doc.getTextWidth(ntSubStr);
+        doc.text(ntSubStr, rightEdge - ntSubW, y + 12);
+        y += 22;
+      }
+
+      // Total COGS bar
+      checkPageBreak(22);
+      doc.setFillColor(...NAVY);
+      doc.rect(MARGIN, y, CONTENT_WIDTH, 18, 'F');
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(9);
+      doc.setTextColor(...WHITE);
+      doc.text('Total COGS', MARGIN + 8, y + 13);
+      const totalCogsStr = formatCurrency(report.totalCOGS ?? 0);
+      const totalCogsW = doc.getTextWidth(totalCogsStr);
+      doc.text(totalCogsStr, rightEdge - totalCogsW, y + 13);
+      y += 26;
+
+      // Gross Profit highlight
+      checkPageBreak(22);
+      doc.setFillColor(...LBLUE);
+      doc.rect(MARGIN, y, CONTENT_WIDTH, 18, 'F');
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(9);
+      doc.setTextColor(29, 78, 216);
+      doc.text('Gross Profit', MARGIN + 8, y + 13);
+      const gpStr = formatCurrency(report.grossProfit ?? 0);
+      const gpW = doc.getTextWidth(gpStr);
+      doc.text(gpStr, rightEdge - gpW, y + 13);
+      y += 26;
+    } else if (report.cogs && report.cogs.length > 0) {
+      // Fallback: no taxable split available, render flat COGS
       drawSection('COST OF GOODS SOLD', report.cogs, 'Total COGS', report.totalCOGS ?? 0);
 
       // Gross Profit highlight

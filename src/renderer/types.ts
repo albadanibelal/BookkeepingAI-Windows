@@ -37,9 +37,13 @@ export interface PnLReport {
   period?: string;
   revenue?: PnLCategory[];
   cogs?: PnLCategory[];
+  taxableCOGS?: PnLCategory[];
+  nonTaxableCOGS?: PnLCategory[];
   operatingExpenses?: PnLCategory[];
   totalRevenue?: number;
   totalCOGS?: number;
+  totalTaxableCOGS?: number;
+  totalNonTaxableCOGS?: number;
   totalOpex?: number;
   grossProfit?: number;
   netIncome?: number;
