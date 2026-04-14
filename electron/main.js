@@ -11,15 +11,31 @@ function setupAutoUpdater() {
   autoUpdater.autoDownload = true;
   autoUpdater.autoInstallOnAppQuit = true;
 
-  autoUpdater.on('update-available', () => {
+  autoUpdater.on('update-available', (info) => {
     if (mainWindow) {
       mainWindow.webContents.executeJavaScript(
-        `document.title = 'BookkeepingAI — Downloading update...'`
+        `document.title = 'BookkeepingAI — Downloading update v${info.version}...'`
       );
     }
   });
 
+  autoUpdater.on('download-progress', (progress) => {
+    if (mainWindow) {
+      const pct = Math.round(progress.percent);
+      mainWindow.webContents.executeJavaScript(
+        `document.title = 'BookkeepingAI — Downloading update ${pct}%'`
+      );
+      mainWindow.setProgressBar(progress.percent / 100);
+    }
+  });
+
   autoUpdater.on('update-downloaded', () => {
+    if (mainWindow) {
+      mainWindow.setProgressBar(-1); // clear progress bar
+      mainWindow.webContents.executeJavaScript(
+        `document.title = 'BookkeepingAI'`
+      );
+    }
     dialog.showMessageBox(mainWindow, {
       type: 'info',
       title: 'Update Ready',
@@ -32,8 +48,27 @@ function setupAutoUpdater() {
     });
   });
 
+  autoUpdater.on('update-not-available', () => {
+    if (mainWindow) {
+      mainWindow.webContents.executeJavaScript(
+        `document.title = 'BookkeepingAI'`
+      );
+    }
+  });
+
   autoUpdater.on('error', (err) => {
     console.log('Auto-update error:', err.message);
+    if (mainWindow) {
+      mainWindow.setProgressBar(-1);
+      mainWindow.webContents.executeJavaScript(
+        `document.title = 'BookkeepingAI'`
+      );
+      dialog.showMessageBox(mainWindow, {
+        type: 'error',
+        title: 'Update Failed',
+        message: 'Failed to download update. Please check your internet connection and try again from Help > Check for Updates.',
+      });
+    }
   });
 
   // Check for updates (silently)
