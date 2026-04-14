@@ -133,6 +133,11 @@ For retail/convenience store clients, these items are commonly missed — look s
 - Vendor buydown or rebate credits (negative COGS)
 - Return/credit invoices (negative COGS)
 - Out-of-period invoices or utility bills (exclude + flag)
+- Payroll documents: ADP, Gusto, QuickBooks Payroll, Paychex, Square Payroll, or manual payroll records
+  - Extract: gross wages, employer payroll taxes (FICA, FUTA, SUI), health/benefits contributions, workers' comp
+  - Each pay period or payroll run = one line item with date and amount
+  - Use the **employer total cost** (gross wages + employer taxes + benefits), NOT the employee net pay
+  - If a payroll summary covers multiple pay periods, break out each period as a separate line item
 
 ---
 
@@ -154,12 +159,32 @@ For retail/convenience store clients, these items are commonly missed — look s
 - **Payroll & Benefits**, **Rent & Occupancy**, **Utilities**, **Telecommunications**
 - **Insurance**, **Taxes & Licenses**, **Bank Fees**, **Credit Card Processing Fees**
 - **Supplies & Maintenance**, **Professional Services**, **Miscellaneous**
+- **Advertising & Marketing** — Google Ads, Yelp, social media ads, signage, print ads, business cards
+- **Software & Subscriptions** — POS system fees (NRS, Clover), QuickBooks, scheduling software, security cameras, website hosting
+- **Vehicle & Delivery** — gas, mileage reimbursement, vehicle insurance, delivery service fees
+- **Equipment Lease/Rental** — copier lease, coffee machine rental, ATM placement fees
+- **Depreciation & Amortization** — only if documented by accountant
+- **Medical & Clinical Supplies** — for clinics: gloves, syringes, lab supplies, sterilization (separate from COGS)
+- **Continuing Education & Training** — staff training, certifications, CEUs for medical/dental
+- **Waste & Disposal** — trash service, medical waste disposal, hazmat removal
+- **Security** — alarm monitoring, guard service, camera system subscription
+- **Charitable Contributions** — donations (if documented)
+- **Meals & Entertainment** — business meals (flag as 50% deductible for accountant)
+- **Shipping & Postage** — USPS, FedEx, UPS for business mail/packages
 
 ### Classification Rules
 - **Invoice TO the business** = Expense (COGS or Operating)
 - **Vendor buydown/rebate** = negative COGS line (NOT revenue) — see Rule 2A
 - **Lottery scratcher purchase** = COGS, not Operating Expense — see Rule 11
 - **Out-of-period utility bill** = excluded — see Rule 10
+
+### Payroll Classification Rules
+- **Gross Wages + Employer Payroll Taxes** → Payroll & Benefits
+- **Health/dental/vision insurance (employer portion)** → Payroll & Benefits
+- **Workers' compensation premiums** → Insurance (NOT Payroll & Benefits)
+- **Payroll processing fees** (ADP fee, Gusto subscription) → Professional Services
+- Do NOT double-count: if a payroll summary includes both the wage total and a separate tax line, verify they are not already included in each other
+- If the payroll document only shows a single lump sum with no breakdown, record the full amount under Payroll & Benefits and flag: "No wage/tax breakdown available — manual review recommended"
 
 ---
 
