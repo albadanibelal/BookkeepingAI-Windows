@@ -95,7 +95,32 @@ Do NOT add cash sales, lottery/scratcher sales, rebates, or "other income" witho
 - If an invoice number is partially illegible, transcribe what is clearly readable and append `[?]` for unclear digits.
 - The Amount Due must still be clearly readable even if the invoice number is partially ambiguous.
 
-### Rule 13: Pre-Report Integrity Checklist (REQUIRED — state before building report)
+### Rule 13: Owner's Draw / Distributions Are NOT Expenses
+- Payments to owners labeled "owner's draw," "shareholder distribution," "member distribution," or similar are **NOT operating expenses** and do **NOT** appear on the P&L.
+- These are balance sheet transactions (equity reduction). Exclude from the report entirely.
+- Flag in the Flagged section: `[Payee] — $X.XX — EXCLUDED: owner's draw/distribution, not a P&L expense.`
+- If unclear whether a payment to an owner is a draw or wages, flag for accountant review — do not guess.
+
+### Rule 14: Loan Payments — Split Principal vs. Interest
+- Only the **interest portion** of a loan payment is a P&L expense (Interest Expense).
+- The **principal portion** is a balance sheet transaction (liability reduction) and does NOT appear on the P&L.
+- If the loan statement breaks out principal and interest, record only the interest under "Interest Expense."
+- If no breakdown is available, record the full payment under "Interest Expense" and flag: "Principal/interest split not available — full payment recorded as interest. Accountant review recommended."
+- Common sources: bank loan statements, SBA loan documents, equipment financing statements, merchant cash advance (MCA) statements.
+
+### Rule 15: Returns & Refunds Reduce Revenue, Not Add Expense
+- Customer refunds, chargebacks, and returns are **negative revenue**, not expenses.
+- Record as a negative line item under the original revenue category (e.g., negative Card Sales).
+- If the POS/processor statement shows "refunds" or "chargebacks" as a separate line, subtract from Total Revenue.
+- Do NOT create an expense line for refunds.
+
+### Rule 16: Sales Tax Collected Is NOT Revenue
+- Sales tax collected from customers is a **liability** (owed to CDTFA), not revenue.
+- If the POS or card processor statement includes sales tax in gross sales, use the **net sales** figure (excluding tax) for revenue.
+- If a sales tax payment to CDTFA is documented, exclude from P&L expenses — it is a liability payment, not an operating expense.
+- Add a note in the Taxability Summary: total sales tax collected vs. total sales tax remitted, if both documents are available.
+
+### Rule 17: Pre-Report Integrity Checklist (REQUIRED — state before building report)
 - Every revenue figure has a named source document and a printed dollar amount
 - Zero estimated or inferred amounts exist anywhere in the report
 - Every expense line cites: Vendor — Invoice # — Date — Exact Amount
@@ -105,6 +130,10 @@ Do NOT add cash sales, lottery/scratcher sales, rebates, or "other income" witho
 - Vendor buydowns/rebates are in COGS (not Revenue)
 - All utility/service bills have service periods within the reporting month (or flagged)
 - Illegible invoices are excluded and flagged — not estimated
+- Owner's draws/distributions are excluded from P&L (not in expenses)
+- Loan payments split into interest (expense) and principal (excluded) — or flagged if no split available
+- Customer refunds/chargebacks recorded as negative revenue, not expenses
+- Sales tax collected excluded from revenue (net sales used)
 - Missing documents are listed in the Missing Data section
 - Running this again with the same files would produce identical totals
 
@@ -171,12 +200,17 @@ For retail/convenience store clients, these items are commonly missed — look s
 - **Charitable Contributions** — donations (if documented)
 - **Meals & Entertainment** — business meals (flag as 50% deductible for accountant)
 - **Shipping & Postage** — USPS, FedEx, UPS for business mail/packages
+- **Interest Expense** — bank loan interest, SBA loan interest, credit line interest, equipment financing interest, merchant cash advance fees
 
 ### Classification Rules
 - **Invoice TO the business** = Expense (COGS or Operating)
 - **Vendor buydown/rebate** = negative COGS line (NOT revenue) — see Rule 2A
 - **Lottery scratcher purchase** = COGS, not Operating Expense — see Rule 11
 - **Out-of-period utility bill** = excluded — see Rule 10
+- **Owner's draw / distribution** = EXCLUDED from P&L entirely — see Rule 13
+- **Loan payment (principal)** = EXCLUDED from P&L; only interest portion is an expense — see Rule 14
+- **Customer refund / chargeback** = negative Revenue, NOT an expense — see Rule 15
+- **Sales tax collected** = NOT revenue; use net sales figure — see Rule 16
 
 ### Payroll Classification Rules
 - **Gross Wages + Employer Payroll Taxes** → Payroll & Benefits
@@ -238,6 +272,10 @@ For retail/convenience store clients, these items are commonly missed — look s
 8. **Total verification** — sum of line items must equal document's own printed total. If off, flag — do not force balance.
 9. **Missing data** — list every category of document not provided.
 10. **Estimation audit** — confirm zero estimated figures. Any line without a direct document citation must be removed or flagged.
+11. **Owner's draw check** — any payment to owner/member/shareholder? Exclude from P&L, flag (Rule 13).
+12. **Loan payment check** — any loan/financing payment? Split principal vs. interest, or flag if no breakdown (Rule 14).
+13. **Refund/chargeback check** — any customer refunds? Record as negative revenue, not expense (Rule 15).
+14. **Sales tax check** — revenue figures use net sales (excluding tax collected)? (Rule 16).
 
 ---
 
@@ -279,3 +317,7 @@ Use markdown tables for line items. Bold all subtotals and totals.
 - **QuickBooks or accountant P&L also uploaded** — treat as reference only. Do not copy its numbers without verifying each line against a source invoice. Note discrepancies in the Flagged section.
 - **Cash basis vs. accrual** — if client uses cash basis, note in report header. Out-of-period bills may be valid on cash basis if paid in-period — ask the user.
 - **Retail/Convenience Store clients** — always split COGS by Taxable vs. Non-Taxable. Required for every retail client regardless of whether they ask for it.
+- **Merchant Cash Advance (MCA)** — daily/weekly MCA debits are loan repayments (principal + fees). If no split available, record full amount as Interest Expense and flag for accountant.
+- **Owner paying personal expenses from business account** — exclude from P&L and flag: "Possible personal expense — accountant review required."
+- **Barter or trade transactions** — if documented, record fair market value as both revenue and expense. Flag for accountant review.
+- **Insurance claim payouts** — not revenue. Exclude from P&L or record as "Other Income" only if the accountant has classified it that way. Flag for review.
