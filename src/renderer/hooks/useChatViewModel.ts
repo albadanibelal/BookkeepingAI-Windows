@@ -196,10 +196,10 @@ You can also type any bookkeeping question in the message box below.
       const structurePrompt = `Convert the following Profit & Loss report into a JSON object. Return ONLY valid JSON, no markdown fences, no explanation.
 
 IMPORTANT: Keep descriptions SHORT (max 40 chars each). Combine similar small items. This must fit in one response.
-IMPORTANT: Split COGS into taxableCOGS and nonTaxableCOGS arrays per CDTFA rules. Also include totalTaxableCOGS and totalNonTaxableCOGS subtotals. The "cogs" field should contain ALL COGS items (both taxable and non-taxable combined).
+IMPORTANT: Split COGS into taxableCOGS, nonTaxableCOGS, and mixedCOGS arrays per CDTFA rules. Also include totalTaxableCOGS, totalNonTaxableCOGS, and totalMixedCOGS subtotals. The "cogs" field should contain ALL COGS items (taxable, non-taxable, mixed, and lottery combined).
 
 Required JSON format:
-{"businessName":"string","period":"string","revenue":[{"category":"string","items":[{"description":"string","amount":0.00,"date":"string"}]}],"taxableCOGS":[{"category":"string","items":[{"description":"string","amount":0.00,"date":"string"}]}],"nonTaxableCOGS":[{"category":"string","items":[{"description":"string","amount":0.00,"date":"string"}]}],"cogs":[{"category":"string","items":[{"description":"string","amount":0.00,"date":"string"}]}],"operatingExpenses":[{"category":"string","items":[{"description":"string","amount":0.00,"date":"string"}]}],"totalRevenue":0.00,"totalTaxableCOGS":0.00,"totalNonTaxableCOGS":0.00,"totalCOGS":0.00,"totalOpex":0.00,"grossProfit":0.00,"netIncome":0.00,"notes":["string"],"sourceDocuments":["string"]}
+{"businessName":"string","period":"string","revenue":[{"category":"string","items":[{"description":"string","amount":0.00,"date":"string"}]}],"taxableCOGS":[{"category":"string","items":[{"description":"string","amount":0.00,"date":"string"}]}],"nonTaxableCOGS":[{"category":"string","items":[{"description":"string","amount":0.00,"date":"string"}]}],"mixedCOGS":[{"category":"string","items":[{"description":"string","amount":0.00,"date":"string"}]}],"cogs":[{"category":"string","items":[{"description":"string","amount":0.00,"date":"string"}]}],"operatingExpenses":[{"category":"string","items":[{"description":"string","amount":0.00,"date":"string"}]}],"totalRevenue":0.00,"totalTaxableCOGS":0.00,"totalNonTaxableCOGS":0.00,"totalMixedCOGS":0.00,"totalCOGS":0.00,"totalOpex":0.00,"grossProfit":0.00,"netIncome":0.00,"notes":["string"],"sourceDocuments":["string"]}
 
 P&L Report:
 ${markdown}
@@ -249,6 +249,36 @@ Source files: ${sourceFiles.join(', ')}`;
           for (let i = 0; i < openBraces; i++) clean += '}';
 
           const report: PnLReport = JSON.parse(clean);
+
+          // Post-generation math validation
+          const warnings: string[] = [];
+          const taxable = report.totalTaxableCOGS ?? 0;
+          const nonTaxable = report.totalNonTaxableCOGS ?? 0;
+          const mixed = report.totalMixedCOGS ?? 0;
+          const totalCOGS = report.totalCOGS ?? 0;
+          const grossProfit = report.grossProfit ?? 0;
+          const totalRevenue = report.totalRevenue ?? 0;
+          const totalOpex = report.totalOpex ?? 0;
+          const netIncome = report.netIncome ?? 0;
+
+          const cogsSum = taxable + nonTaxable + mixed;
+          if (Math.abs(cogsSum - totalCOGS) > 0.02 && cogsSum > 0) {
+            warnings.push(`COGS mismatch: Taxable ($${taxable.toFixed(2)}) + Non-Taxable ($${nonTaxable.toFixed(2)}) + Mixed ($${mixed.toFixed(2)}) = $${cogsSum.toFixed(2)}, but Total COGS = $${totalCOGS.toFixed(2)}`);
+          }
+          const expectedGross = totalRevenue - totalCOGS;
+          if (Math.abs(expectedGross - grossProfit) > 0.02 && totalRevenue > 0) {
+            warnings.push(`Gross Profit mismatch: Revenue ($${totalRevenue.toFixed(2)}) - COGS ($${totalCOGS.toFixed(2)}) = $${expectedGross.toFixed(2)}, but Gross Profit = $${grossProfit.toFixed(2)}`);
+          }
+          const expectedNet = grossProfit - totalOpex;
+          if (Math.abs(expectedNet - netIncome) > 0.02 && grossProfit > 0) {
+            warnings.push(`Net Income mismatch: Gross Profit ($${grossProfit.toFixed(2)}) - OpEx ($${totalOpex.toFixed(2)}) = $${expectedNet.toFixed(2)}, but Net Income = $${netIncome.toFixed(2)}`);
+          }
+
+          if (warnings.length > 0) {
+            const existingNotes = report.notes ?? [];
+            report.notes = [...existingNotes, '⚠ MATH VALIDATION:', ...warnings];
+          }
+
           const pdfBase64 = generatePDF(report);
 
           if (pdfBase64) {

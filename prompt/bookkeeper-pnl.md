@@ -57,6 +57,10 @@ PITCO invoices are divided into numbered sections (Sec 10 Grocery, Sec 20 Bev NT
 - Classify each section by taxability per CDTFA rules.
 - If a section subtotal is not clearly printed, exclude that section and flag it.
 - **NEVER combine all PITCO sections into one block or estimate the split.**
+- Each PITCO section has a header line like "Sec 33 TOBACCO ACCESSORIES" followed by line items, then a section subtotal on its own line. The subtotal for a section is the **LAST dollar amount before the NEXT section header**.
+- Read sections **IN ORDER** (Sec 10, 11, 20, 21, 33, 60, 65, 80, 90, 99) and verify each section number matches its printed label before recording the subtotal. Do NOT assign a dollar amount to a section unless the section header label is directly above it.
+- **Cross-check:** the sum of all section subtotals must equal the invoice grand total (minus delivery/Sec99). If they don't match, flag the discrepancy — do NOT adjust any individual subtotal to force balance.
+- If multiple PITCO invoices exist (e.g., #3405792 and #3405793), process each invoice independently. Do NOT merge or swap sections across different invoice numbers.
 
 #### Rule 4B: Frito-Lay Invoices — Full Invoice Total to Non-Taxable COGS
 - Frito-Lay invoices contain snack foods (chips, crackers — non-taxable in CA) and occasionally taxable items marked with an asterisk (*).
@@ -87,9 +91,20 @@ Do NOT add cash sales, lottery/scratcher sales, rebates, or "other income" witho
 - For cash-basis reporting: include expenses when **paid**, not when incurred. Note the basis in the report header.
 - If accounting basis is unknown, default to **accrual** and flag for accountant confirmation.
 
+### Rule 10A: Borderline Date Items — Default EXCLUDE
+- If an invoice date, premium period, or service period falls **outside** the reporting month, **EXCLUDE from totals** by default — even if the payment was made during the reporting month (unless cash-basis accounting is confirmed).
+- Always include excluded items in the **Flagged & Excluded Items** section with the specific reason (e.g., "February 2026 premium", "invoice dated 02/02/2026", "credit dated 12/27/2025").
+- This applies to: future-month insurance premiums, future-dated invoices, prior-month credits, and any item where the service/billing period does not overlap the reporting month.
+- The accountant can add them back if the client uses cash-basis accounting — but the default is always **exclude and flag**.
+- This rule must be applied **consistently** across all runs: the same borderline item must always be excluded, never sometimes included and sometimes excluded.
+
 ### Rule 11: Lottery/Scratcher Stock = COGS, Not Operating Expenses
-- Lottery scratcher purchase invoices = COGS (product purchased for resale), classified as "Mixed — Manual Review."
-- Lottery settlement reports (store earnings) = Revenue.
+- Lottery scratcher purchase invoices = COGS (product purchased for resale), classified under **Lottery Stock COGS** subcategory.
+- Bank statement EFT debits to "CA Lottery", "California Lottery", "CA Lot Scratcher", or similar = **Lottery Stock COGS**. Record each EFT as a separate line item with date and amount from the bank statement.
+- Lottery Lotto terminal EFT debits (e.g., "Lottery Lotto EFT") = also **Lottery Stock COGS**.
+- Lottery settlement reports (store earnings/commissions) = Revenue.
+- **Lottery Stock COGS must always appear as its own subcategory under Non-Taxable COGS** when lottery-related transactions are found in any source document (invoices or bank statements).
+- If no lottery invoices or bank statement EFTs are found, note "Lottery stock invoices not provided" in Missing Documents.
 
 ### Rule 12: Handwritten or Ambiguous Invoice Numbers
 - If an invoice number is partially illegible, transcribe what is clearly readable and append `[?]` for unclear digits.
@@ -258,6 +273,36 @@ For retail/convenience store clients, these items are commonly missed — look s
 
 **NON-TAXABLE COGS subcategories:** Snack Foods | Candy & Confectionery | Bakery & Bread | Grocery / Food Items | Dairy & Eggs | Non-Carbonated Beverages | Bottled Water
 
+### Known Vendor Classification (California Retail / Convenience Store)
+
+Use this table as the **default classification** for known vendors. Override ONLY if the invoice explicitly shows different product types with subtotals.
+
+| Vendor | Default Category | Taxability | Notes |
+|--------|-----------------|------------|-------|
+| SM North | Tobacco Products | Taxable | Tobacco/energy distributor |
+| CW Brower Wholesale | Alcohol (Beer/Wine/Spirits) | Taxable | Alcohol distributor |
+| Golden Brands / Harbor | Alcohol (Beer/Wine) | Taxable | Use Total Sales as Amount Due unless Net Due printed |
+| Bansal | Tobacco / Cigars | Taxable | Tobacco distributor |
+| Pepsi Beverages Co. | Carbonated Beverages | Taxable | Carbonated/energy drinks |
+| 7UP / Snapple / Dr Pepper | Carbonated Beverages | Taxable | Carbonated beverages |
+| Reyes Coca-Cola | Mixed — manual split required | Mixed | Contains both taxable (soda) and non-taxable items |
+| Frito-Lay | Snack Foods (Rule 4B applies) | Non-Taxable | Full invoice to Non-Taxable, no split |
+| Eric Jones Distributing | Snack Foods | Non-Taxable | Little Debbie / snack cakes |
+| Bimbo Bakeries | Bakery & Bread | Non-Taxable | Bread products |
+| Aranda's Tortilla | Bakery & Bread | Non-Taxable | Tortillas |
+| Crystal Creamery | Dairy & Eggs | Non-Taxable | Dairy products |
+| SKS Egg Farm | Dairy & Eggs | Non-Taxable | Eggs |
+| Melodee Ice Cream | Dairy & Eggs | Non-Taxable | Ice cream (food product, non-taxable in CA) |
+| Primo Water / DS Waters | Bottled Water | Non-Taxable | Water delivery |
+| WinCo Foods | Mixed — manual split required | Mixed | Grocery store, mixed taxable/non-taxable |
+| Costco Wholesale | Mixed — manual split required | Mixed | Wholesale, mixed items |
+| Madlen Enterprises | Mixed — manual split required | Mixed | Mixed product distributor |
+| PITCO Foods | Use Rule 4A — split by section | Per-section | Each section classified independently |
+| Salter's Distributing | General Merchandise | Taxable | Non-food distributor |
+| Express Telecom | General Merchandise | Taxable | Phone accessories/telecom products |
+
+**IMPORTANT:** This table ensures the same vendor is always routed to the same category across runs. If an invoice from a listed vendor clearly contains products from a different category (e.g., SM North invoice with a non-tobacco section subtotal), classify that portion accordingly — but the default must be the table above.
+
 ---
 
 ## Step 4: Reconcile and Validate
@@ -285,9 +330,15 @@ Produce a clean, well-formatted markdown P&L report with:
 
 1. **Header** — business name, "Profit & Loss Statement", reporting period, accounting basis
 2. **Revenue Section** — line items with citations, Total Revenue
-3. **COGS Section** — Taxable COGS subtotal, Non-Taxable COGS subtotal, Mixed (flagged), Total COGS, Gross Profit
+3. **COGS Section** — structured as follows:
+   - **Taxable COGS** — all taxable subcategories with line items, then Taxable COGS Subtotal
+   - **Non-Taxable COGS** — all non-taxable subcategories with line items, then Non-Taxable COGS Subtotal
+   - **Mixed COGS — Manual Review Required** — if ANY mixed invoices exist, they MUST appear as a visible section with individual line items in the report body. NEVER relegate Mixed COGS to a notes-only reference. Each mixed invoice must be listed with vendor, invoice #, date, and amount. Then Mixed COGS Subtotal.
+   - **Lottery Stock COGS** — if lottery EFTs or invoices exist, list them here as a separate subsection
+   - **Total COGS** = Taxable + Non-Taxable + Mixed + Lottery Stock
+   - **Gross Profit** = Total Revenue − Total COGS
 4. **Operating Expenses Section** — categories with line items and citations, Total OpEx
-5. **Taxability Summary** — Taxable COGS total, Non-Taxable COGS total, EBT sales from NRS Pay if available
+5. **Taxability Summary** — Taxable COGS total, Non-Taxable COGS total, Mixed COGS total (pending split), EBT sales from NRS Pay if available
 6. **Net Income** = Gross Profit minus Total Operating Expenses
 7. **Flagged & Excluded Items** — illegible invoices, out-of-period bills, ambiguous amounts
 8. **Missing Documents** — list every document needed but not provided

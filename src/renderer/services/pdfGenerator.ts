@@ -215,7 +215,8 @@ export function generatePDF(report: PnLReport): string | null {
 
     // --- COGS ---
     const hasTaxableSplit = (report.taxableCOGS && report.taxableCOGS.length > 0) ||
-                            (report.nonTaxableCOGS && report.nonTaxableCOGS.length > 0);
+                            (report.nonTaxableCOGS && report.nonTaxableCOGS.length > 0) ||
+                            (report.mixedCOGS && report.mixedCOGS.length > 0);
 
     if (hasTaxableSplit) {
       // Section title bar for COGS parent
@@ -353,6 +354,70 @@ export function generatePDF(report: PnLReport): string | null {
         const ntSubStr = formatCurrency(report.totalNonTaxableCOGS ?? 0);
         const ntSubW = doc.getTextWidth(ntSubStr);
         doc.text(ntSubStr, rightEdge - ntSubW, y + 12);
+        y += 22;
+      }
+
+      // Mixed COGS subsection
+      if (report.mixedCOGS && report.mixedCOGS.length > 0) {
+        checkPageBreak(24);
+        doc.setFillColor(255, 243, 224); // light orange tint
+        doc.rect(MARGIN, y, CONTENT_WIDTH, 16, 'F');
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(8.5);
+        doc.setTextColor(194, 120, 3);
+        doc.text('MIXED COGS — MANUAL REVIEW REQUIRED', MARGIN + 8, y + 12);
+        y += 18;
+
+        for (const cat of report.mixedCOGS) {
+          checkPageBreak(30);
+          const catTotal = (cat.items ?? []).reduce((sum, it) => sum + (it.amount ?? 0), 0);
+
+          doc.setFillColor(232, 240, 247);
+          doc.rect(MARGIN, y, CONTENT_WIDTH, 16, 'F');
+          doc.setFont('helvetica', 'bold');
+          doc.setFontSize(8.5);
+          doc.setTextColor(...NAVY);
+          doc.text(cat.category, MARGIN + 8, y + 12);
+          const mixCatStr = formatCurrency(catTotal);
+          const mixCatW = doc.getTextWidth(mixCatStr);
+          doc.text(mixCatStr, rightEdge - mixCatW, y + 12);
+          y += 18;
+
+          (cat.items ?? []).forEach((item, idx) => {
+            checkPageBreak(16);
+            if (idx % 2 === 0) {
+              doc.setFillColor(249, 249, 249);
+              doc.rect(MARGIN, y, CONTENT_WIDTH, 14, 'F');
+            }
+            const desc = item.description ?? '';
+            const truncated = desc.length > 60 ? desc.substring(0, 57) + '...' : desc;
+            doc.setFont('helvetica', 'normal');
+            doc.setFontSize(8);
+            doc.setTextColor(...DARK);
+            doc.text(`  ${item.date ?? ''}  ${truncated}`, MARGIN + 4, y + 10);
+            const amtStr = formatCurrency(item.amount ?? 0);
+            const amtW = doc.getTextWidth(amtStr);
+            doc.text(amtStr, rightEdge - amtW, y + 10);
+            y += 14;
+          });
+
+          doc.setDrawColor(...LGREY);
+          doc.setLineWidth(0.3);
+          doc.line(MARGIN, y, rightEdge, y);
+          y += 4;
+        }
+
+        // Mixed COGS subtotal
+        checkPageBreak(18);
+        doc.setFillColor(255, 243, 224);
+        doc.rect(MARGIN, y, CONTENT_WIDTH, 16, 'F');
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(8.5);
+        doc.setTextColor(194, 120, 3);
+        doc.text('Mixed COGS Subtotal', MARGIN + 8, y + 12);
+        const mixSubStr = formatCurrency(report.totalMixedCOGS ?? 0);
+        const mixSubW = doc.getTextWidth(mixSubStr);
+        doc.text(mixSubStr, rightEdge - mixSubW, y + 12);
         y += 22;
       }
 
