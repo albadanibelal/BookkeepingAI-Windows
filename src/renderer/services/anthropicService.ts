@@ -75,6 +75,7 @@ export class AnthropicService {
       max_tokens: maxTokens,
       system: systemPrompt,
       messages,
+      temperature: 0,
     };
 
     const response = await fetch(`${getBaseURL()}/messages`, {

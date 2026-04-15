@@ -68,6 +68,7 @@ export interface AnthropicRequest {
   max_tokens: number;
   system: string;
   messages: AnthropicMessage[];
+  temperature?: number;
 }
 
 export interface AnthropicMessage {

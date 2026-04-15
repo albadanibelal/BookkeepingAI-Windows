@@ -344,14 +344,15 @@ Source files: ${sourceFiles.join(', ')}`;
           ...fileToContent(files[0]),
           { type: 'text' as const, text: prompt },
         ];
-        conversationHistory.current.push({ role: 'user', content });
 
+        // Send as a fresh message (no conversation history) for reproducible reports
         const reply = await anthropicService.sendMessage(
-          conversationHistory.current,
+          [{ role: 'user', content }],
           systemPrompt,
           effectiveAPIKey
         );
 
+        conversationHistory.current.push({ role: 'user', content });
         conversationHistory.current.push({
           role: 'assistant',
           content: [{ type: 'text', text: reply }],
