@@ -17,7 +17,6 @@ export function useChatViewModel() {
   const [uploadedFiles, setUploadedFiles] = useState<UploadedFile[]>([]);
   const [isSending, setIsSending] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
-  const [showAPIKeyPrompt, setShowAPIKeyPrompt] = useState(false);
 
   const conversationHistory = useRef<AnthropicMessage[]>([]);
 

@@ -31,9 +31,9 @@ function getHeaders(apiKey: string): Record<string, string> {
   };
 
   if (Config.proxyURL) {
-    // Using Cloudflare proxy — don't send API key, the proxy injects it
-    if (Config.appToken) {
-      headers['x-app-token'] = Config.appToken;
+    // Using proxy — send license key, proxy injects API key
+    if (Config.licenseKey) {
+      headers['x-license-key'] = Config.licenseKey;
     }
   } else {
     // Direct mode — send API key
@@ -51,8 +51,8 @@ function getUploadHeaders(apiKey: string): Record<string, string> {
   };
 
   if (Config.proxyURL) {
-    if (Config.appToken) {
-      headers['x-app-token'] = Config.appToken;
+    if (Config.licenseKey) {
+      headers['x-license-key'] = Config.licenseKey;
     }
   } else {
     headers['x-api-key'] = apiKey;
@@ -134,6 +134,20 @@ export class AnthropicService {
     }
 
     return data.id;
+  }
+
+  // Validate a license key against the proxy
+  async validateLicenseKey(key: string): Promise<{ valid: boolean; plan?: string; clientName?: string; error?: string }> {
+    try {
+      const response = await fetch(`${Config.proxyURL}/license/validate`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ key }),
+      });
+      return await response.json();
+    } catch {
+      return { valid: false, error: 'Unable to connect. Check your internet connection.' };
+    }
   }
 
   // Compress image by drawing to canvas

@@ -1,22 +1,24 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Header } from './components/Header';
 import { ChatBubble, TypingIndicator } from './components/ChatBubble';
 import { FileDropZone } from './components/FileDropZone';
 import { InputBar } from './components/InputBar';
-import { SettingsSheet } from './components/Settings';
+import { LicenseActivation, SettingsSheet } from './components/Settings';
 import { useChatViewModel } from './hooks/useChatViewModel';
+import { Config } from './config';
 
 const App: React.FC = () => {
   const vm = useChatViewModel();
   const chatEndRef = useRef<HTMLDivElement>(null);
   const initialized = useRef(false);
+  const [isActivated, setIsActivated] = useState(!!Config.licenseKey);
 
   useEffect(() => {
-    if (!initialized.current) {
+    if (!initialized.current && isActivated) {
       initialized.current = true;
       vm.onAppear();
     }
-  }, []);
+  }, [isActivated]);
 
   // Auto-scroll to bottom
   useEffect(() => {
@@ -41,6 +43,18 @@ const App: React.FC = () => {
     }
     vm.addFiles(fileInfos);
   };
+
+  // Show activation screen if no license key
+  if (!isActivated) {
+    return (
+      <LicenseActivation
+        onActivated={() => {
+          setIsActivated(true);
+          initialized.current = false; // reset so onAppear runs
+        }}
+      />
+    );
+  }
 
   return (
     <div
@@ -79,7 +93,10 @@ const App: React.FC = () => {
       />
 
       {vm.showSettings && (
-        <SettingsSheet onClose={() => vm.setShowSettings(false)} />
+        <SettingsSheet
+          onClose={() => vm.setShowSettings(false)}
+          onDeactivate={() => setIsActivated(false)}
+        />
       )}
     </div>
   );

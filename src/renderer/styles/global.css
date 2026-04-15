@@ -853,6 +853,31 @@ body {
   color: var(--text-secondary);
 }
 
+.form-error {
+  font-size: 13px;
+  color: var(--error);
+  margin-top: 8px;
+  font-weight: 500;
+}
+
+.deactivate-btn {
+  width: 100%;
+  padding: 10px 20px;
+  background: none;
+  color: var(--error);
+  border: 1px solid var(--error);
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--duration-fast) var(--ease-spring);
+  font-family: inherit;
+}
+
+.deactivate-btn:hover {
+  background: rgba(255, 59, 48, 0.08);
+}
+
 /* ============================================================
    Scrollbar — Minimal, Apple-style
    ============================================================ */

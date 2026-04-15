@@ -1,12 +1,21 @@
-// All API calls route through the Cloudflare Worker proxy.
-// The API key is stored as an encrypted secret in Cloudflare — never in this code.
+// All API calls route through the Cloud Run proxy.
+// The API key is stored as an encrypted secret in Cloud Run — never in this code.
 
 export const Config = {
-  // Cloudflare Worker proxy — all API calls go through here
+  // Cloud Run proxy — all API calls go through here
   proxyURL: 'https://bookkeepingai-proxy-470863874819.us-west1.run.app',
 
-  // Optional app token for extra security (must match APP_TOKEN secret in Cloudflare)
-  appToken: '',
+  // License key (persisted in localStorage)
+  get licenseKey(): string {
+    return localStorage.getItem('bookkeepingai_license_key') || '';
+  },
+  set licenseKey(key: string) {
+    if (key) {
+      localStorage.setItem('bookkeepingai_license_key', key);
+    } else {
+      localStorage.removeItem('bookkeepingai_license_key');
+    }
+  },
 
   // Remote URL for the system prompt
   promptURL: 'https://gist.githubusercontent.com/albadanibelal/bd15666b818f221d97445e010d53339f/raw/bookkeeping-pnl.txt',
