@@ -1,7 +1,7 @@
 import { useState, useCallback, useRef, useEffect } from 'react';
 import type { ChatMessage, UploadedFile, AnthropicMessage, AnthropicContent } from '../types';
 import { getMimeType } from '../types';
-import { Config, getSystemPrompt, getExtractPrompt, getClassifyPrompt } from '../config';
+import { Config, getSystemPrompt } from '../config';
 import { anthropicService } from '../services/anthropicService';
 import { generatePDF } from '../services/pdfGenerator';
 import type { PnLReport } from '../types';
@@ -332,14 +332,15 @@ Source files: ${sourceFiles.join(', ')}`;
     [effectiveAPIKey]
   );
 
-  // Core function: two-pass pipeline
-  // Pass 1: Send documents to Claude with extraction prompt → get structured JSON
-  // Pass 2: Send extracted JSON to Claude with classification prompt → get P&L report
+  // Core function to process files and send to API
   const sendMessageWithFiles = useCallback(async (files: UploadedFile[], userText = '') => {
 
     setIsSending(true);
     setUploadedFiles([]);
     autoSendTriggered.current = false;
+
+    // Fetch the latest system prompt (from remote URL or bundled file)
+    const systemPrompt = await getSystemPrompt();
 
     // Display user message
     const names = files.map((f) => f.name).join(', ');
@@ -349,86 +350,58 @@ Source files: ${sourceFiles.join(', ')}`;
       { id: genId(), role: 'user', content: displayText, timestamp: new Date() },
     ]);
 
-    // Show progress
-    const progressId = genId();
+    // Show progress while analyzing
+    const analyzeProgressId = genId();
     setMessages((prev) => [
       ...prev,
       {
-        id: progressId,
+        id: analyzeProgressId,
         role: 'assistant',
-        content: `Pass 1/2: Reading ${files.length} document(s) and extracting all financial data...`,
+        content: `Analyzing ${files.length} document(s)... this may take a minute.`,
         timestamp: new Date(),
         isProgress: true,
       },
     ]);
 
     try {
-      // ===== PASS 1: EXTRACTION (documents → JSON) =====
-      const extractPrompt = await getExtractPrompt();
+      const defaultPrompt = files.length === 1
+        ? 'Extract all financial data from this document and generate a complete Profit & Loss report. Split COGS into Taxable and Non-Taxable per CDTFA rules. Include Total Revenue, Taxable COGS subtotal, Non-Taxable COGS subtotal, Total COGS, Gross Profit, Total Operating Expenses, and Net Income. Output the full report in a single response.'
+        : `Extract all financial data from these ${files.length} documents and generate a complete Profit & Loss report. Split COGS into Taxable and Non-Taxable per CDTFA rules. Include Total Revenue, Taxable COGS subtotal, Non-Taxable COGS subtotal, Total COGS, Gross Profit, Total Operating Expenses, and Net Income. Output the full report in a single response.`;
+      const prompt = userText || defaultPrompt;
 
-      // Build file content array
+      // Build content array with all files
       const allContent: AnthropicContent[] = [];
       for (const file of files) {
         allContent.push(...fileToContent(file));
       }
-      allContent.push({
-        type: 'text',
-        text: userText
-          ? `${userText}\n\nExtract all financial data from these documents into the required JSON format.`
-          : 'Extract all financial data from these documents into the required JSON format. Return ONLY valid JSON.',
-      });
+      allContent.push({ type: 'text', text: prompt });
 
-      const extractionReply = await anthropicService.sendMessage(
+      // Send as a fresh message (no conversation history) for reproducible reports
+      const reply = await anthropicService.sendMessage(
         [{ role: 'user', content: allContent }],
-        extractPrompt,
-        effectiveAPIKey,
-        16384
+        systemPrompt,
+        effectiveAPIKey
       );
 
-      // Update progress
-      setMessages((prev) =>
-        prev.map((m) =>
-          m.id === progressId
-            ? { ...m, content: 'Pass 2/2: Classifying transactions and generating P&L report...' }
-            : m
-        )
-      );
-
-      // ===== PASS 2: CLASSIFICATION (JSON → P&L report) =====
-      const classifyPrompt = await getClassifyPrompt();
-
-      const classifyReply = await anthropicService.sendMessage(
-        [{
-          role: 'user',
-          content: [{ type: 'text', text: `Here is the extracted financial data in JSON format. Classify all transactions and produce a complete Profit & Loss report.\n\n${extractionReply}` }],
-        }],
-        classifyPrompt,
-        effectiveAPIKey,
-        16384
-      );
-
-      // Store in conversation history for follow-up questions
       conversationHistory.current.push({ role: 'user', content: allContent });
       conversationHistory.current.push({
         role: 'assistant',
-        content: [{ type: 'text', text: classifyReply }],
+        content: [{ type: 'text', text: reply }],
       });
 
-      // Show the P&L report
       setMessages((prev) => {
-        const filtered = prev.filter((m) => m.id !== progressId);
+        const filtered = prev.filter((m) => m.id !== analyzeProgressId);
         return [
           ...filtered,
-          { id: genId(), role: 'assistant', content: classifyReply, timestamp: new Date() },
+          { id: genId(), role: 'assistant', content: reply, timestamp: new Date() },
         ];
       });
 
-      // Generate PDF
-      handleGeneratePDF(classifyReply, files.map((f) => f.name));
-
+      // Always attempt PDF generation after document processing
+      handleGeneratePDF(reply, files.map((f) => f.name));
     } catch (error: any) {
       setMessages((prev) => [
-        ...prev.filter((m) => m.id !== progressId),
+        ...prev.filter((m) => m.id !== analyzeProgressId),
         {
           id: genId(),
           role: 'assistant',
