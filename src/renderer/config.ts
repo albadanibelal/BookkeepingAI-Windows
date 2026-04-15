@@ -17,11 +17,15 @@ export const Config = {
     }
   },
 
-  // Remote URL for the system prompt
+  // Remote URL for the system prompt (legacy single-pass — kept as fallback)
   promptURL: 'https://gist.githubusercontent.com/albadanibelal/bd15666b818f221d97445e010d53339f/raw/bookkeeping-pnl.txt',
 
   // Bundled fallback prompt file
   fallbackPromptPath: './bookkeeper-pnl.md',
+
+  // Two-pass prompt files (bundled)
+  extractPromptPath: './bookkeeper-extract.md',
+  classifyPromptPath: './bookkeeper-classify.md',
 };
 
 // ---- System Prompt (remote-controlled) ----
@@ -63,6 +67,47 @@ export async function getSystemPrompt(): Promise<string> {
 
 export function clearPromptCache() {
   cachedPrompt = null;
+  cachedExtractPrompt = null;
+  cachedClassifyPrompt = null;
+}
+
+// ---- Two-Pass Prompts (bundled only) ----
+
+let cachedExtractPrompt: string | null = null;
+let cachedClassifyPrompt: string | null = null;
+
+export async function getExtractPrompt(): Promise<string> {
+  if (cachedExtractPrompt) return cachedExtractPrompt;
+  try {
+    const response = await fetch(Config.extractPromptPath);
+    if (response.ok) {
+      let text = await response.text();
+      text = stripFrontmatter(text);
+      cachedExtractPrompt = text;
+      return cachedExtractPrompt;
+    }
+  } catch (err) {
+    console.warn('Failed to load extract prompt:', err);
+  }
+  cachedExtractPrompt = 'You are a financial document data extractor. Read the uploaded documents and output a JSON object with every transaction found. Do not classify or categorize — only extract raw data.';
+  return cachedExtractPrompt;
+}
+
+export async function getClassifyPrompt(): Promise<string> {
+  if (cachedClassifyPrompt) return cachedClassifyPrompt;
+  try {
+    const response = await fetch(Config.classifyPromptPath);
+    if (response.ok) {
+      let text = await response.text();
+      text = stripFrontmatter(text);
+      cachedClassifyPrompt = text;
+      return cachedClassifyPrompt;
+    }
+  } catch (err) {
+    console.warn('Failed to load classify prompt:', err);
+  }
+  cachedClassifyPrompt = 'You are an expert bookkeeper. Classify the provided extracted transaction data into a Profit & Loss report.';
+  return cachedClassifyPrompt;
 }
 
 function stripFrontmatter(text: string): string {
