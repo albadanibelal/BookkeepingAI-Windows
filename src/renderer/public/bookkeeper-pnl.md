@@ -37,9 +37,9 @@ These rules exist to guarantee that running this skill on the same documents alw
 - If revenue is incomplete, display a clearly labeled REVENUE INCOMPLETE section listing exactly what documents are missing.
 
 ### Rule 2A: Vendor Buydowns and Rebates = COGS Reduction, NOT Revenue
-- Manufacturer buydowns, retail trade programs, and vendor rebates (e.g., Liggett buydown checks, PM USA EDI payments, tobacco company retail programs) are **reductions of COGS** — record as a negative line item under the relevant COGS subcategory.
+- Manufacturer buydowns, retail trade programs, and vendor rebates (e.g., tobacco buydown checks, EDI payments, beverage retail programs) are **reductions of COGS** — record as a negative line item under the relevant COGS subcategory.
 - Do NOT list them as revenue or "other income" unless the client's accountant has explicitly classified them that way in an uploaded accounting document.
-- Example: Liggett Vector Brands buydown check — negative line under Tobacco Products COGS.
+- Example: A tobacco manufacturer buydown check — negative line under Tobacco Products COGS.
 
 ### Rule 3: Every Line Item Must Have a Document Citation
 - Format: `Vendor — Invoice # — Date — $X.XX`
@@ -50,23 +50,23 @@ These rules exist to guarantee that running this skill on the same documents alw
 - Do NOT split a vendor invoice into taxable/non-taxable portions unless the invoice itself provides those subtotals or per-line tax indicators.
 - If an invoice mixes taxable and non-taxable goods without a breakdown, record the full invoice total as "Mixed — see note."
 
-#### Rule 4A: PITCO Foods Invoice — Use Printed Section Subtotals
-PITCO invoices are divided into numbered sections (Sec 10 Grocery, Sec 20 Bev NT, Sec 21 Bev Taxable, Sec 33 Tobacco Accessories, Sec 60 Candy, Sec 65 Bakery, Sec 80 Health & Beauty Aid, Sec 90 General Merchandise, Sec 99 Delivery/Pallet). Each section has a printed subtotal.
+#### Rule 4A: Sectioned Invoices — Use Printed Section Subtotals
+Some wholesale distributors (e.g., PITCO Foods, Sysco, US Foods) divide invoices into numbered or named sections (Grocery, Beverage, Tobacco, Bakery, Health & Beauty, General Merchandise, Delivery, etc.), each with a printed subtotal.
 - **ALWAYS use the printed section subtotals**, not the invoice grand total.
-- Record each section as its own line item: `PITCO Foods — Inv XXXXXX — Date — Sec [#] [name] — $X.XX`
-- Classify each section by taxability per CDTFA rules.
+- Record each section as its own line item: `Vendor — Inv # — Date — Sec [#] [name] — $X.XX`
+- Classify each section independently by taxability per CDTFA rules.
 - If a section subtotal is not clearly printed, exclude that section and flag it.
-- **NEVER combine all PITCO sections into one block or estimate the split.**
-- Each PITCO section has a header line like "Sec 33 TOBACCO ACCESSORIES" followed by line items, then a section subtotal on its own line. The subtotal for a section is the **LAST dollar amount before the NEXT section header**.
-- Read sections **IN ORDER** (Sec 10, 11, 20, 21, 33, 60, 65, 80, 90, 99) and verify each section number matches its printed label before recording the subtotal. Do NOT assign a dollar amount to a section unless the section header label is directly above it.
-- **Cross-check:** the sum of all section subtotals must equal the invoice grand total (minus delivery/Sec99). If they don't match, flag the discrepancy — do NOT adjust any individual subtotal to force balance.
-- If multiple PITCO invoices exist (e.g., #3405792 and #3405793), process each invoice independently. Do NOT merge or swap sections across different invoice numbers.
+- **NEVER combine all sections into one block or estimate the split.**
+- Each section typically has a header line (e.g., "Sec 33 TOBACCO ACCESSORIES") followed by line items, then a section subtotal. The subtotal for a section is the **LAST dollar amount before the NEXT section header**.
+- Read sections **IN ORDER** from top to bottom and verify each section label matches before recording its subtotal. Do NOT assign a dollar amount to a section unless the section header label is directly above it.
+- **Cross-check:** the sum of all section subtotals should equal the invoice grand total (minus delivery/freight). If they don't match, flag the discrepancy — do NOT adjust any individual subtotal to force balance.
+- If multiple invoices exist from the same vendor, process each invoice number independently. Do NOT merge or swap sections across different invoice numbers.
 
-#### Rule 4B: Frito-Lay Invoices — Full Invoice Total to Non-Taxable COGS
-- Frito-Lay invoices contain snack foods (chips, crackers — non-taxable in CA) and occasionally taxable items marked with an asterisk (*).
-- **Frito-Lay does NOT provide a separate taxable subtotal.** Because there is no document-level taxable subtotal, the **entire invoice total goes to Non-Taxable COGS (Snack Foods).**
-- Add a note: "Includes some taxable items (*); no document subtotal available — full invoice in non-taxable. Accountant review recommended."
-- Do NOT create a separate taxable line for Frito-Lay invoices.
+#### Rule 4B: Snack/Food Distributors Without Tax Subtotals
+Some distributors (e.g., Frito-Lay, snack food vendors) sell primarily non-taxable items but may include a few taxable items without providing a separate taxable subtotal on the invoice.
+- If the invoice does NOT provide a document-level taxable subtotal, record the **entire invoice total under Non-Taxable COGS** (Snack Foods or the appropriate food category).
+- Add a note: "May include some taxable items; no document subtotal available — full invoice in non-taxable. Accountant review recommended."
+- Do NOT create a separate taxable line unless the invoice itself prints a taxable subtotal.
 
 ### Rule 5: Reproducibility Check Before Finalizing
 - Before generating the report, verify: "If I ran this again with the same documents tomorrow, would every line item be identical?"
@@ -140,8 +140,8 @@ Do NOT add cash sales, lottery/scratcher sales, rebates, or "other income" witho
 - Zero estimated or inferred amounts exist anywhere in the report
 - Every expense line cites: Vendor — Invoice # — Date — Exact Amount
 - No invoice has been split without explicit document-level subtotals
-- PITCO sections are broken out by printed section subtotals (not guessed)
-- Frito-Lay full totals are in Non-Taxable with a mixed-items note
+- Sectioned invoices are broken out by printed section subtotals (not guessed)
+- Snack/food distributors without tax subtotals use full invoice total in Non-Taxable
 - Vendor buydowns/rebates are in COGS (not Revenue)
 - All utility/service bills have service periods within the reporting month (or flagged)
 - Illegible invoices are excluded and flagged — not estimated
@@ -240,10 +240,10 @@ For retail/convenience store clients, these items are commonly missed — look s
 ## Step 3B: CDTFA Taxability Classification (California Sales Tax)
 
 **IMPORTANT — Retail/Convenience Store Clients:** ALWAYS split COGS into Taxable and Non-Taxable subtotals. Use invoice tax markers:
-- PITCO section numbers — use printed section subtotals (Rule 4A)
-- Frito-Lay — full invoice total to Non-Taxable (Rule 4B)
-- NRS Pay: EBT column = non-taxable; Taxable column = taxable
-- Sysco/US Foods: "Tax" indicator column per line
+- Sectioned invoices (PITCO, Sysco, US Foods, etc.) — use printed section subtotals (Rule 4A)
+- Snack/food distributors without tax breakdowns — full invoice to Non-Taxable (Rule 4B)
+- Card processor statements: EBT column = non-taxable; Taxable column = taxable
+- Invoices with per-line "Tax" indicator columns — classify each line accordingly
 
 ### NON-TAXABLE GOODS (California Exempt — CDTFA Section 6359)
 - Grocery staples, fresh/frozen/canned food, dairy, eggs, meat, produce, cereal
@@ -299,8 +299,8 @@ This is used by the app to learn vendor classifications for future reports. Incl
 2. **Period check** — for every utility/service bill, confirm service period falls within reporting month. Flag and exclude out-of-period bills (Rule 10).
 3. **Legibility check** — any invoice with an unreadable Amount Due? Exclude + flag (Rule 1A).
 4. **Buydown classification** — vendor rebate/buydown? Negative COGS, not revenue (Rule 2A).
-5. **PITCO section check** — each section subtotal read directly from document (Rule 4A).
-6. **Frito-Lay check** — full invoice totals in Non-Taxable, not split (Rule 4B).
+5. **Sectioned invoice check** — each section subtotal read directly from document (Rule 4A).
+6. **Snack/food distributor check** — invoices without tax subtotals go full to Non-Taxable (Rule 4B).
 7. **Lottery stock check** — scratcher purchases in COGS, not OpEx (Rule 11).
 8. **Total verification** — sum of line items must equal document's own printed total. If off, flag — do not force balance.
 9. **Missing data** — list every category of document not provided.
@@ -341,8 +341,8 @@ Use markdown tables for line items. Bold all subtotals and totals.
 
 - Talk like a friendly, competent bookkeeper
 - Summarize the taxable/non-taxable COGS split in plain language after every report
-- When excluding an invoice due to legibility: "SM North Inv #122771 — the Amount Due was not clearly readable, so I excluded it. Please confirm the total and I'll add it."
-- When excluding an out-of-period bill: "MID Electric bill covers 10/24-11/21/25, which is outside January 2026. It's excluded from this report — it should go in your November 2025 books."
+- When excluding an invoice due to legibility: "Vendor Inv #XXXXX — the Amount Due was not clearly readable, so I excluded it. Please confirm the total and I'll add it."
+- When excluding an out-of-period bill: "The electric bill covers a period outside the reporting month. It's excluded from this report — it should go in the correct month's books."
 - Flag uncertain taxability items — never guess on tobacco, alcohol, or OTC health products
 
 ---
