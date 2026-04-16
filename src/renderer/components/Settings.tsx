@@ -1,5 +1,5 @@
 import React from 'react';
-import { Config, getVendorMappings } from '../config';
+import { Config } from '../config';
 import { anthropicService } from '../services/anthropicService';
 
 interface LicenseActivationProps {
@@ -80,8 +80,6 @@ interface SettingsSheetProps {
 export const SettingsSheet: React.FC<SettingsSheetProps> = ({ onClose, onDeactivate }) => {
   const key = Config.licenseKey;
   const masked = key ? `${key.slice(0, 3)}****-****-${key.slice(-4)}` : 'None';
-  const vendors = getVendorMappings();
-
   const handleDeactivate = () => {
     Config.licenseKey = '';
     onDeactivate();
@@ -106,44 +104,6 @@ export const SettingsSheet: React.FC<SettingsSheetProps> = ({ onClose, onDeactiv
             <div className="settings-status-title">License Active</div>
             <div className="settings-status-subtitle">{masked}</div>
           </div>
-        </div>
-
-        <div className="divider" />
-
-        {/* Vendor Mappings Section */}
-        <div style={{ padding: '0 0 12px 0' }}>
-          <div style={{ fontSize: 13, fontWeight: 600, color: '#1a3a5c', marginBottom: 8 }}>
-            Learned Vendors ({vendors.length})
-          </div>
-          <div style={{ fontSize: 11, color: '#6b7280', marginBottom: 8 }}>
-            Vendors are learned automatically from each report to ensure consistent classification.
-          </div>
-          {vendors.length === 0 ? (
-            <div style={{ fontSize: 12, color: '#9ca3af', fontStyle: 'italic', padding: '8px 0' }}>
-              No vendors learned yet. Run a report to start building your vendor list.
-            </div>
-          ) : (
-            <div style={{ maxHeight: 200, overflowY: 'auto', borderRadius: 6, border: '1px solid #e5e7eb' }}>
-              {vendors.map((v) => (
-                <div
-                  key={v.vendor}
-                  style={{
-                    padding: '6px 10px', borderBottom: '1px solid #f3f4f6', fontSize: 11,
-                  }}
-                >
-                  <span style={{ fontWeight: 600, color: '#1a3a5c' }}>{v.vendor}</span>
-                  <span style={{ color: '#6b7280', marginLeft: 6 }}>{v.category}</span>
-                  <span style={{
-                    marginLeft: 6, padding: '1px 5px', borderRadius: 3, fontSize: 10,
-                    background: v.taxability === 'Taxable' ? '#fef2f2' : v.taxability === 'Non-Taxable' ? '#f0fdf4' : '#fffbeb',
-                    color: v.taxability === 'Taxable' ? '#dc2626' : v.taxability === 'Non-Taxable' ? '#16a34a' : '#ca8a04',
-                  }}>
-                    {v.taxability}
-                  </span>
-                </div>
-              ))}
-            </div>
-          )}
         </div>
 
         <div className="divider" />
