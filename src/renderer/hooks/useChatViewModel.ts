@@ -1,7 +1,7 @@
 import { useState, useCallback, useRef, useEffect } from 'react';
 import type { ChatMessage, UploadedFile, AnthropicMessage, AnthropicContent } from '../types';
 import { getMimeType } from '../types';
-import { Config, getSystemPrompt } from '../config';
+import { Config, getSystemPromptWithVendors, mergeVendorMappings } from '../config';
 import { anthropicService } from '../services/anthropicService';
 import { generatePDF } from '../services/pdfGenerator';
 import type { PnLReport } from '../types';
@@ -340,7 +340,7 @@ Source files: ${sourceFiles.join(', ')}`;
     autoSendTriggered.current = false;
 
     // Fetch the latest system prompt (from remote URL or bundled file)
-    const systemPrompt = await getSystemPrompt();
+    const systemPrompt = await getSystemPromptWithVendors();
 
     // Display user message
     const names = files.map((f) => f.name).join(', ');
@@ -397,6 +397,17 @@ Source files: ${sourceFiles.join(', ')}`;
         ];
       });
 
+      // Auto-learn vendor mappings from the report
+      try {
+        const vendorMatch = reply.match(/```json\s*\n(\[[\s\S]*?\])\s*\n```/);
+        if (vendorMatch) {
+          const vendorData = JSON.parse(vendorMatch[1]);
+          if (Array.isArray(vendorData) && vendorData.length > 0 && vendorData[0].vendor) {
+            mergeVendorMappings(vendorData);
+          }
+        }
+      } catch { /* vendor extraction failed silently — not critical */ }
+
       // Always attempt PDF generation after document processing
       handleGeneratePDF(reply, files.map((f) => f.name));
     } catch (error: any) {
@@ -430,7 +441,7 @@ Source files: ${sourceFiles.join(', ')}`;
     setIsSending(true);
     setInputText('');
 
-    const systemPrompt = await getSystemPrompt();
+    const systemPrompt = await getSystemPromptWithVendors();
 
     setMessages((prev) => [
       ...prev,

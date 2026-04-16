@@ -273,35 +273,23 @@ For retail/convenience store clients, these items are commonly missed — look s
 
 **NON-TAXABLE COGS subcategories:** Snack Foods | Candy & Confectionery | Bakery & Bread | Grocery / Food Items | Dairy & Eggs | Non-Carbonated Beverages | Bottled Water
 
-### Known Vendor Classification (California Retail / Convenience Store)
+### Known Vendor Classification
 
-Use this table as the **default classification** for known vendors. Override ONLY if the invoice explicitly shows different product types with subtotals.
+{{VENDOR_TABLE}}
 
-| Vendor | Default Category | Taxability | Notes |
-|--------|-----------------|------------|-------|
-| SM North | Tobacco Products | Taxable | Tobacco/energy distributor |
-| CW Brower Wholesale | Alcohol (Beer/Wine/Spirits) | Taxable | Alcohol distributor |
-| Golden Brands / Harbor | Alcohol (Beer/Wine) | Taxable | Use Total Sales as Amount Due unless Net Due printed |
-| Bansal | Tobacco / Cigars | Taxable | Tobacco distributor |
-| Pepsi Beverages Co. | Carbonated Beverages | Taxable | Carbonated/energy drinks |
-| 7UP / Snapple / Dr Pepper | Carbonated Beverages | Taxable | Carbonated beverages |
-| Reyes Coca-Cola | Mixed — manual split required | Mixed | Contains both taxable (soda) and non-taxable items |
-| Frito-Lay | Snack Foods (Rule 4B applies) | Non-Taxable | Full invoice to Non-Taxable, no split |
-| Eric Jones Distributing | Snack Foods | Non-Taxable | Little Debbie / snack cakes |
-| Bimbo Bakeries | Bakery & Bread | Non-Taxable | Bread products |
-| Aranda's Tortilla | Bakery & Bread | Non-Taxable | Tortillas |
-| Crystal Creamery | Dairy & Eggs | Non-Taxable | Dairy products |
-| SKS Egg Farm | Dairy & Eggs | Non-Taxable | Eggs |
-| Melodee Ice Cream | Dairy & Eggs | Non-Taxable | Ice cream (food product, non-taxable in CA) |
-| Primo Water / DS Waters | Bottled Water | Non-Taxable | Water delivery |
-| WinCo Foods | Mixed — manual split required | Mixed | Grocery store, mixed taxable/non-taxable |
-| Costco Wholesale | Mixed — manual split required | Mixed | Wholesale, mixed items |
-| Madlen Enterprises | Mixed — manual split required | Mixed | Mixed product distributor |
-| PITCO Foods | Use Rule 4A — split by section | Per-section | Each section classified independently |
-| Salter's Distributing | General Merchandise | Taxable | Non-food distributor |
-| Express Telecom | General Merchandise | Taxable | Phone accessories/telecom products |
+**For vendors NOT in the table above (or if no table is provided):** classify based on the product descriptions printed on the invoice and the CDTFA taxability rules above. If the invoice clearly sells one product type (e.g., a dairy distributor), classify under the appropriate category. If the invoice contains mixed products without subtotals, classify as Mixed COGS.
 
-**IMPORTANT:** This table ensures the same vendor is always routed to the same category across runs. If an invoice from a listed vendor clearly contains products from a different category (e.g., SM North invoice with a non-tobacco section subtotal), classify that portion accordingly — but the default must be the table above.
+### Vendor Classification Output (REQUIRED)
+
+At the END of your report, after Source Documents, include a section called **Vendor Mappings** with a JSON code block listing every vendor you classified and how:
+
+```json
+[
+  {"vendor": "Vendor Name", "category": "Category Used", "taxability": "Taxable|Non-Taxable|Mixed"}
+]
+```
+
+This is used by the app to learn vendor classifications for future reports. Include EVERY vendor that appeared in the documents, even excluded ones.
 
 ---
 

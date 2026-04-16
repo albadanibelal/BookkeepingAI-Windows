@@ -64,6 +64,13 @@ export interface PnLLineItem {
   date?: string;
 }
 
+// Vendor Mapping (learned per client)
+export interface VendorMapping {
+  vendor: string;
+  category: string;
+  taxability: 'Taxable' | 'Non-Taxable' | 'Mixed' | 'Per-section';
+}
+
 // Anthropic API Types
 export interface AnthropicRequest {
   model: string;

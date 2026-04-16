@@ -114,3 +114,58 @@ function stripFrontmatter(text: string): string {
   const match = text.match(/^---\s*\n[\s\S]*?\n---\s*\n([\s\S]*)$/);
   return match ? match[1].trim() : text.trim();
 }
+
+// ---- Vendor Mappings (per-client, learned from reports) ----
+
+import type { VendorMapping } from './types';
+
+const VENDOR_KEY = 'bookkeepingai_vendor_mappings';
+
+export function getVendorMappings(): VendorMapping[] {
+  try {
+    const stored = localStorage.getItem(VENDOR_KEY);
+    if (stored) return JSON.parse(stored);
+  } catch { /* ignore */ }
+  return [];
+}
+
+export function saveVendorMappings(mappings: VendorMapping[]) {
+  localStorage.setItem(VENDOR_KEY, JSON.stringify(mappings));
+  // Clear prompt cache so next report uses updated mappings
+  cachedPrompt = null;
+}
+
+export function mergeVendorMappings(newMappings: VendorMapping[]) {
+  const existing = getVendorMappings();
+  const byVendor = new Map(existing.map(m => [m.vendor.toLowerCase(), m]));
+
+  for (const m of newMappings) {
+    // New vendors get added; existing vendors get updated
+    byVendor.set(m.vendor.toLowerCase(), m);
+  }
+
+  const merged = [...byVendor.values()];
+  saveVendorMappings(merged);
+  return merged;
+}
+
+export function buildVendorTable(mappings: VendorMapping[]): string {
+  if (mappings.length === 0) {
+    return 'No known vendor mappings yet. Classify all vendors based on invoice product descriptions and CDTFA rules.';
+  }
+
+  let table = 'Use this table as the **default classification** for known vendors. Override ONLY if the invoice explicitly shows different products with subtotals.\n\n';
+  table += '| Vendor | Default Category | Taxability |\n';
+  table += '|--------|-----------------|------------|\n';
+  for (const m of mappings) {
+    table += `| ${m.vendor} | ${m.category} | ${m.taxability} |\n`;
+  }
+  return table;
+}
+
+export async function getSystemPromptWithVendors(): Promise<string> {
+  const basePrompt = await getSystemPrompt();
+  const mappings = getVendorMappings();
+  const vendorTable = buildVendorTable(mappings);
+  return basePrompt.replace('{{VENDOR_TABLE}}', vendorTable);
+}
