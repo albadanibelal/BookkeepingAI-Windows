@@ -1,6 +1,6 @@
 {
   "name": "bookkeepingai",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "BookkeepingAI — Profit & Loss report agent",
   "main": "electron/main.js",
   "scripts": {

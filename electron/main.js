@@ -2,8 +2,52 @@ const { app, BrowserWindow, ipcMain, dialog, Menu, shell } = require('electron')
 const { autoUpdater } = require('electron-updater');
 const path = require('path');
 const fs = require('fs');
+const crypto = require('crypto');
+const os = require('os');
 
 let mainWindow = null;
+
+// ---- Device Info ----
+
+function getDeviceId() {
+  // Persist a random device ID in the app's userData folder
+  const idPath = path.join(app.getPath('userData'), 'device-id');
+  try {
+    if (fs.existsSync(idPath)) {
+      return fs.readFileSync(idPath, 'utf8').trim();
+    }
+  } catch { /* ignore */ }
+  const id = crypto.randomBytes(8).toString('hex');
+  try { fs.writeFileSync(idPath, id); } catch { /* ignore */ }
+  return id;
+}
+
+function getDeviceInfo() {
+  const version = app.getVersion();
+  const platform = os.platform(); // 'win32', 'darwin', 'linux'
+  const release = os.release();   // e.g., '10.0.22631'
+  const hostname = os.hostname(); // e.g., 'MAMON-PC'
+  const arch = os.arch();         // 'x64', 'arm64'
+
+  // Build a friendly OS name
+  let osName = platform;
+  if (platform === 'win32') {
+    const major = parseInt(release.split('.')[0], 10);
+    const build = parseInt(release.split('.')[2] || '0', 10);
+    osName = major >= 10 && build >= 22000 ? 'Windows 11' : 'Windows 10';
+    osName += ` (${release})`;
+  } else if (platform === 'darwin') {
+    osName = `macOS ${release}`;
+  }
+
+  return {
+    deviceId: getDeviceId(),
+    deviceName: hostname,
+    os: osName,
+    arch,
+    appVersion: version,
+  };
+}
 
 // ---- Auto-Update ----
 
@@ -202,6 +246,9 @@ ipcMain.handle('open-file-dialog', async () => {
     };
   });
 });
+
+// IPC: Get device info
+ipcMain.handle('get-device-info', () => getDeviceInfo());
 
 // IPC: Save PDF
 ipcMain.handle('save-pdf', async (_event, base64Data, defaultName) => {

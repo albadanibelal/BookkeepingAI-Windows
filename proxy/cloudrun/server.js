@@ -73,7 +73,7 @@ function isAdmin(req) {
 const CORS_HEADERS = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-  'Access-Control-Allow-Headers': 'Content-Type, anthropic-version, anthropic-beta, x-license-key, Authorization',
+  'Access-Control-Allow-Headers': 'Content-Type, anthropic-version, anthropic-beta, x-license-key, x-device-info, Authorization',
 };
 
 // Validate a license key against Firestore
@@ -115,13 +115,45 @@ async function validateKey(key) {
 }
 
 // Log usage asynchronously (fire-and-forget)
-function logUsage(licenseKey, endpoint, documentCount) {
-  usageCollection.add({
+function logUsage(licenseKey, endpoint, documentCount, deviceInfo) {
+  const entry = {
     licenseKey,
     timestamp: Firestore.Timestamp.now(),
     endpoint,
     documentCount: documentCount || 0,
-  }).catch((err) => console.error('Usage log error:', err.message));
+  };
+
+  // Add device info if provided
+  if (deviceInfo) {
+    try {
+      const info = typeof deviceInfo === 'string' ? JSON.parse(deviceInfo) : deviceInfo;
+      if (info.deviceId) entry.deviceId = info.deviceId;
+      if (info.deviceName) entry.deviceName = info.deviceName;
+      if (info.os) entry.os = info.os;
+      if (info.arch) entry.arch = info.arch;
+      if (info.appVersion) entry.appVersion = info.appVersion;
+    } catch { /* ignore bad JSON */ }
+  }
+
+  usageCollection.add(entry).catch((err) => console.error('Usage log error:', err.message));
+
+  // Also update a devices collection for quick lookups
+  if (deviceInfo) {
+    try {
+      const info = typeof deviceInfo === 'string' ? JSON.parse(deviceInfo) : deviceInfo;
+      if (info.deviceId) {
+        db.collection('devices').doc(`${licenseKey}_${info.deviceId}`).set({
+          licenseKey,
+          deviceId: info.deviceId,
+          deviceName: info.deviceName || 'Unknown',
+          os: info.os || 'Unknown',
+          arch: info.arch || 'Unknown',
+          appVersion: info.appVersion || 'Unknown',
+          lastActive: Firestore.Timestamp.now(),
+        }, { merge: true }).catch((err) => console.error('Device log error:', err.message));
+      }
+    } catch { /* ignore */ }
+  }
 }
 
 // Count file references in request body
@@ -260,6 +292,39 @@ const server = http.createServer(async (req, res) => {
     }
   }
 
+  // ---- Admin: List Devices ----
+  if (path === '/admin/devices' && req.method === 'GET') {
+    if (!isAdmin(req)) return jsonResponse(res, 401, { error: 'Unauthorized' });
+    try {
+      const keyFilter = url.searchParams.get('key');
+      let query = db.collection('devices').orderBy('lastActive', 'desc');
+      if (keyFilter) query = query.where('licenseKey', '==', keyFilter);
+      const snapshot = await query.limit(200).get();
+      const devices = [];
+      snapshot.forEach((doc) => {
+        devices.push(doc.data());
+      });
+
+      // Group by license key
+      const byKey = {};
+      devices.forEach((d) => {
+        if (!byKey[d.licenseKey]) byKey[d.licenseKey] = [];
+        byKey[d.licenseKey].push({
+          deviceId: d.deviceId,
+          deviceName: d.deviceName,
+          os: d.os,
+          arch: d.arch,
+          appVersion: d.appVersion,
+          lastActive: d.lastActive ? d.lastActive.toDate().toISOString() : null,
+        });
+      });
+
+      return jsonResponse(res, 200, { devices: byKey, totalDevices: devices.length });
+    } catch (err) {
+      return jsonResponse(res, 500, { error: err.message });
+    }
+  }
+
   // ---- Public: Validate Key ----
   if (path === '/license/validate' && req.method === 'POST') {
     try {
@@ -291,7 +356,8 @@ const server = http.createServer(async (req, res) => {
 
     // Log usage (fire-and-forget)
     const docCount = countDocuments(body);
-    logUsage(licenseKey, path, docCount);
+    const deviceInfo = req.headers['x-device-info'] || null;
+    logUsage(licenseKey, path, docCount, deviceInfo);
 
     // Build headers for Anthropic
     const headers = {

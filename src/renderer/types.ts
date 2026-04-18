@@ -1,7 +1,16 @@
 // Electron API exposed via preload
+export interface DeviceInfo {
+  deviceId: string;
+  deviceName: string;
+  os: string;
+  arch: string;
+  appVersion: string;
+}
+
 export interface ElectronAPI {
   openFileDialog: () => Promise<Array<{ name: string; path: string; data: string; size: number }>>;
   savePDF: (base64Data: string, defaultName: string) => Promise<boolean>;
+  getDeviceInfo: () => Promise<DeviceInfo>;
 }
 
 declare global {

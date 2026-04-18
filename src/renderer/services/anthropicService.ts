@@ -11,6 +11,22 @@ const VITE_PROXY = '/api/anthropic/v1';
 const API_VERSION = '2023-06-01';
 const MODEL = 'claude-sonnet-4-6';
 
+// Cache device info (loaded once from Electron main process)
+let cachedDeviceInfo: string | null = null;
+
+async function getDeviceHeader(): Promise<string> {
+  if (cachedDeviceInfo) return cachedDeviceInfo;
+  try {
+    if (window.electronAPI?.getDeviceInfo) {
+      const info = await window.electronAPI.getDeviceInfo();
+      cachedDeviceInfo = JSON.stringify(info);
+      return cachedDeviceInfo;
+    }
+  } catch { /* ignore */ }
+  cachedDeviceInfo = '{}';
+  return cachedDeviceInfo;
+}
+
 function getBaseURL(): string {
   // If Cloudflare proxy is configured, use it
   if (Config.proxyURL) {
@@ -23,7 +39,7 @@ function getBaseURL(): string {
   return VITE_PROXY;
 }
 
-function getHeaders(apiKey: string): Record<string, string> {
+async function getHeaders(apiKey: string): Promise<Record<string, string>> {
   const headers: Record<string, string> = {
     'Content-Type': 'application/json',
     'anthropic-version': API_VERSION,
@@ -35,6 +51,11 @@ function getHeaders(apiKey: string): Record<string, string> {
     if (Config.licenseKey) {
       headers['x-license-key'] = Config.licenseKey;
     }
+    // Send device info for analytics
+    const deviceInfo = await getDeviceHeader();
+    if (deviceInfo && deviceInfo !== '{}') {
+      headers['x-device-info'] = deviceInfo;
+    }
   } else {
     // Direct mode — send API key
     headers['x-api-key'] = apiKey;
@@ -44,7 +65,7 @@ function getHeaders(apiKey: string): Record<string, string> {
   return headers;
 }
 
-function getUploadHeaders(apiKey: string): Record<string, string> {
+async function getUploadHeaders(apiKey: string): Promise<Record<string, string>> {
   const headers: Record<string, string> = {
     'anthropic-version': API_VERSION,
     'anthropic-beta': 'files-api-2025-04-14',
@@ -53,6 +74,10 @@ function getUploadHeaders(apiKey: string): Record<string, string> {
   if (Config.proxyURL) {
     if (Config.licenseKey) {
       headers['x-license-key'] = Config.licenseKey;
+    }
+    const deviceInfo = await getDeviceHeader();
+    if (deviceInfo && deviceInfo !== '{}') {
+      headers['x-device-info'] = deviceInfo;
     }
   } else {
     headers['x-api-key'] = apiKey;
@@ -80,7 +105,7 @@ export class AnthropicService {
 
     const response = await fetch(`${getBaseURL()}/messages`, {
       method: 'POST',
-      headers: getHeaders(apiKey),
+      headers: await getHeaders(apiKey),
       body: JSON.stringify(body),
     });
 
@@ -120,7 +145,7 @@ export class AnthropicService {
 
     const response = await fetch(`${getBaseURL()}/files`, {
       method: 'POST',
-      headers: getUploadHeaders(apiKey),
+      headers: await getUploadHeaders(apiKey),
       body: formData,
     });
 
