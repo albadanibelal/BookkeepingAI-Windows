@@ -48,7 +48,10 @@ These rules exist to guarantee that running this skill on the same documents alw
 
 ### Rule 4: No Splitting Without Explicit Document Support
 - Do NOT split a vendor invoice into taxable/non-taxable portions unless the invoice itself provides those subtotals or per-line tax indicators.
-- If an invoice mixes taxable and non-taxable goods without a breakdown, record the full invoice total as "Mixed — see note."
+- **"Mixed COGS" means the invoice contains BOTH taxable AND non-taxable items** without a breakdown. Use Mixed ONLY when there is a genuine taxable/non-taxable split that cannot be determined.
+- If ALL items on an invoice are taxable (even if they span different taxable categories like tobacco + energy drinks + general merchandise), classify the full invoice under the **primary product category** in Taxable COGS. Do NOT put it in Mixed.
+- If ALL items on an invoice are non-taxable (even if they span food + dairy + bakery), classify under the primary food category in Non-Taxable COGS. Do NOT put it in Mixed.
+- Mixed COGS is a last resort — only use it when the invoice genuinely contains a mix of taxable and non-taxable goods with no way to separate them.
 
 #### Rule 4A: Sectioned Invoices — Use Printed Section Subtotals
 Some wholesale distributors (e.g., PITCO Foods, Sysco, US Foods) divide invoices into numbered or named sections (Grocery, Beverage, Tobacco, Bakery, Health & Beauty, General Merchandise, Delivery, etc.), each with a printed subtotal.
