@@ -43,6 +43,9 @@ export interface UploadedFile {
 // P&L Report (for PDF generation)
 export interface PnLReport {
   businessName?: string;
+  businessAddress?: string;
+  businessPhone?: string;
+  businessType?: string;
   period?: string;
   revenue?: PnLCategory[];
   cogs?: PnLCategory[];

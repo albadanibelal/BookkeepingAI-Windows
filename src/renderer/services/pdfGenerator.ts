@@ -65,8 +65,13 @@ export function generatePDF(report: PnLReport): string | null {
 
     // --- Header ---
     y = 0;
+    // Calculate header height based on available business info
+    const hasAddress = report.businessAddress && report.businessAddress.trim();
+    const hasPhone = report.businessPhone && report.businessPhone.trim();
+    const headerHeight = 72 + (hasAddress ? 14 : 0) + (hasPhone ? 14 : 0);
+
     doc.setFillColor(...NAVY);
-    doc.rect(0, 0, PAGE_WIDTH, 72, 'F');
+    doc.rect(0, 0, PAGE_WIDTH, headerHeight, 'F');
 
     doc.setFont('helvetica', 'bold');
     doc.setFontSize(20);
@@ -77,11 +82,24 @@ export function generatePDF(report: PnLReport): string | null {
     doc.setFontSize(11);
     doc.text('Profit & Loss Statement', MARGIN, 52);
 
+    let headerY = 66;
     doc.setFontSize(9);
     doc.setTextColor(204, 204, 204);
-    doc.text(report.period ?? '', MARGIN, 66);
+    doc.text(report.period ?? '', MARGIN, headerY);
 
-    y = 90;
+    if (hasAddress) {
+      headerY += 14;
+      doc.setFontSize(8.5);
+      doc.text(report.businessAddress!, MARGIN, headerY);
+    }
+
+    if (hasPhone) {
+      headerY += 14;
+      doc.setFontSize(8.5);
+      doc.text(report.businessPhone!, MARGIN, headerY);
+    }
+
+    y = headerHeight + 18;
 
     // --- Summary Cards ---
     const totalExpenses = (report.totalCOGS ?? 0) + (report.totalOpex ?? 0);

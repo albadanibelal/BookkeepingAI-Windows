@@ -515,7 +515,7 @@ This is used by the app to learn vendor classifications for future reports. Incl
 
 Produce a clean, well-formatted markdown P&L report with:
 
-1. **Header** — business name, "Profit & Loss Statement", reporting period, accounting basis
+1. **Header** — business name (including DBA if applicable), business address, phone number, "Profit & Loss Statement", reporting period, accounting basis, detected business type. Extract the business name, address, and phone from the uploaded documents (invoices addressed to the business, utility bills, bank statements, business license). If any of these are not found in the documents, omit that field — do NOT guess.
 2. **Revenue Section** — line items with citations, Total Revenue
 3. **COGS Section** — structured as follows:
    - **Taxable COGS** — all taxable subcategories with line items, then Taxable COGS Subtotal
