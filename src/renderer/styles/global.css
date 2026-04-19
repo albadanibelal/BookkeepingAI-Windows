@@ -642,8 +642,15 @@ body {
   outline: none;
   line-height: 1.45;
   max-height: 120px;
+  overflow-y: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
   transition: all var(--duration-fast) var(--ease-spring);
   letter-spacing: -0.01em;
+}
+
+.input-field::-webkit-scrollbar {
+  display: none;
 }
 
 .input-field::placeholder {
