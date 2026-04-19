@@ -155,7 +155,59 @@ Do NOT add cash sales, lottery/scratcher sales, rebates, or "other income" witho
 - If a sales tax payment to CDTFA is documented, exclude from P&L expenses — it is a liability payment, not an operating expense.
 - Add a note in the Taxability Summary: total sales tax collected vs. total sales tax remitted, if both documents are available.
 
-### Rule 17: Pre-Report Integrity Checklist (REQUIRED — state before building report)
+### Rule 17: Bank Statement Payments vs. Invoices — No Double-Counting
+- Bank statement debits/EFT payments to vendors are **NOT additional COGS** if the vendor's invoice is already recorded in the report.
+- The **invoice** is the source of truth for COGS. The bank payment is just the settlement of that invoice.
+- Only use bank statement entries as COGS when there is **no corresponding invoice** (e.g., lottery EFT debits, vendor payments with no invoice uploaded).
+- If a bank EFT amount does not match any uploaded invoice, flag it: "Bank EFT to [vendor] $X.XX — no matching invoice. Confirm if additional purchase or payment on prior invoice."
+
+### Rule 18: Vendor Credit Memos = Negative COGS
+- Credit memos from vendors for returned, damaged, or shorted goods are **negative COGS** under the same category as the original purchase.
+- These are different from manufacturer buydowns (Rule 2A) — credit memos are direct refunds from the vendor, not promotional programs.
+- Record as a negative line item: `Vendor — Credit # — Date — ($X.XX)`
+
+### Rule 19: Wholesale/Grocery Purchases for Resale
+- For retail/convenience store clients, purchases from grocery wholesalers (Costco, WinCo, Cash & Carry, Smart & Final, Restaurant Depot, etc.) are **presumed to be business inventory for resale** unless clearly personal items.
+- Do NOT exclude these as "personal grocery shopping" without strong evidence (e.g., items clearly not sold in a convenience store like pet food, children's clothing).
+- If mixed personal/business items are suspected, include the receipt in COGS and flag: "May include personal items — accountant review recommended."
+
+### Rule 20: Income Tax Payments Are NOT Business Expenses
+- Federal and state income tax payments (estimated quarterly or annual) for sole proprietors, S-corp shareholders, or partners are **NOT operating expenses** — they are personal tax obligations.
+- Exclude from P&L entirely. Flag: "Income tax payment $X.XX — EXCLUDED: personal tax obligation, not a business operating expense."
+- **Sales tax payments to CDTFA ARE also excluded** — they are liability payments, not expenses (see Rule 16).
+- **Payroll taxes (employer FICA, FUTA, SUI) ARE business expenses** — do not confuse with income tax.
+
+### Rule 21: Internal Transfers and Non-Expense Bank Items
+- Internal bank transfers (account to account, savings to checking), money orders without a clear business payee, and ATM cash withdrawals are **NOT operating expenses**.
+- Exclude from P&L. If a transfer appears to fund a business purpose, flag for accountant review rather than guessing.
+- **Bank fees that ARE expenses:** monthly service charges, enhanced due diligence fees, wire transfer fees, NSF/overdraft fees, check order fees → record under **Bank Fees**.
+- **Items that are NOT expenses:** internal transfers, owner ATM withdrawals (owner's draw — Rule 13), money orders to unknown payees.
+
+### Rule 22: Contractor and Service Provider Payments
+- Payments to independent contractors (cleaning, repairs, IT, bookkeeping, legal, plumbing, electrical, pest control, etc.) are **operating expenses**.
+- Classify under the most appropriate category: **Professional Services** (legal, accounting, IT), **Supplies & Maintenance** (cleaning, repairs, pest control), or the specific category that fits.
+- If a 1099 contractor payment has no invoice but appears on the bank statement, include it under the appropriate OpEx category and flag: "No invoice — sourced from bank statement."
+
+### Rule 23: COGS = Purchases, Not Inventory-Adjusted
+- The P&L report records COGS as **total purchases during the reporting period**.
+- This is NOT adjusted for beginning or ending inventory (Beginning Inventory + Purchases - Ending Inventory).
+- Add a note in the report: "COGS represents purchases during the period. No inventory adjustment applied — adjust for inventory counts if available."
+
+### Rule 24: Standard Missing Documents Checklist
+After generating the report, check whether the following document types are present. Flag any that are missing — these are expected for most retail/convenience store businesses:
+
+- **Cash sales report (Z-tape or POS cash summary)** — required for complete revenue
+- **Lottery settlement report** — required for lottery revenue/commissions
+- **Payroll records** — usually the largest operating expense; flag prominently if missing
+- **Rent/lease agreement or payment record** — usually the second largest operating expense
+- **Electric bill for the reporting month**
+- **Water/sewer bill for the reporting month**
+- **Gas/heating bill (if applicable)**
+- **Sales tax return or CDTFA filing (if available)**
+
+If rent or payroll are missing, note prominently: "WARNING: No rent/payroll documented — these are typically the largest operating expenses. Net income is significantly overstated without them."
+
+### Rule 25: Pre-Report Integrity Checklist (REQUIRED — verify before building report)
 - Every revenue figure has a named source document and a printed dollar amount
 - Zero estimated or inferred amounts exist anywhere in the report
 - Every expense line cites: Vendor — Invoice # — Date — Exact Amount
@@ -163,13 +215,20 @@ Do NOT add cash sales, lottery/scratcher sales, rebates, or "other income" witho
 - Sectioned invoices are broken out by printed section subtotals (not guessed)
 - Snack/food distributors without tax subtotals use full invoice total in Non-Taxable
 - Vendor buydowns/rebates are in COGS (not Revenue)
-- All utility/service bills have service periods within the reporting month (or flagged)
+- Accounting basis determined and stated in header (cash vs. accrual)
+- Period matching applied correctly per the determined basis (Rule 10)
 - Illegible invoices are excluded and flagged — not estimated
 - Owner's draws/distributions are excluded from P&L (not in expenses)
-- Loan payments split into interest (expense) and principal (excluded) — or flagged if no split available
+- Loan payments split into interest (expense) and principal (excluded) — or flagged
 - Customer refunds/chargebacks recorded as negative revenue, not expenses
 - Sales tax collected excluded from revenue (net sales used)
-- Missing documents are listed in the Missing Data section
+- Income tax payments excluded from expenses (Rule 20)
+- No double-counting: bank EFT payments not recorded alongside matching invoices (Rule 17)
+- Vendor credit memos recorded as negative COGS (Rule 18)
+- Wholesale/grocery receipts for resale included, not excluded as personal (Rule 19)
+- Internal transfers and non-expense bank items excluded (Rule 21)
+- COGS noted as purchases-based, not inventory-adjusted (Rule 23)
+- Missing documents checklist completed — rent and payroll flagged prominently if missing (Rule 24)
 - Running this again with the same files would produce identical totals
 
 ---
