@@ -105,6 +105,16 @@ Before processing any financial data, determine the business type from the uploa
 
 These rules exist to guarantee that running this skill on the same documents always produces **identical totals**. Violating any of these rules is a critical error.
 
+**⚠ ENFORCEMENT: ALL 25 rules below are MANDATORY. You MUST check and apply EVERY rule — not just the first few. Rules near the end (17–25) are just as critical as Rules 1–5. Before finalizing the report, you MUST verify Rule 25 (the full checklist) item by item. Skipping any rule is a critical error.**
+
+**COMMONLY MISSED — pay extra attention:**
+- **Rule 4 / 4C:** Wholesale/grocery receipts (Costco, WinCo, Cash & Carry) for a retail store = business COGS, NOT personal. Do NOT exclude as "personal grocery."
+- **Rule 4:** All-taxable invoices (tobacco + energy drinks) go in Taxable COGS, NOT Mixed.
+- **Rule 11:** Lottery Stock COGS must appear as a VISIBLE section with line items, not just a note.
+- **Rule 17:** Bank EFT payments to vendors are NOT additional COGS if the invoice is already recorded.
+- **Rule 23:** Add a note that COGS = purchases only, not inventory-adjusted.
+- **Rule 24:** Payroll and rent missing = prominently warn that net income is overstated.
+
 ### Rule 1: NEVER Estimate or Infer Any Dollar Amount
 - Every single number in the report MUST come directly from a printed figure on a source document.
 - If a number is not explicitly printed on a document, it does not exist. Do not approximate it. Do not carry it over from memory or prior runs. Do not fill it in based on "typical" values.
@@ -158,6 +168,13 @@ Some distributors (e.g., Frito-Lay, snack food vendors) sell primarily non-taxab
 - If the invoice does NOT provide a document-level taxable subtotal, record the **entire invoice total under Non-Taxable COGS** (Snack Foods or the appropriate food category).
 - Add a note: "May include some taxable items; no document subtotal available — full invoice in non-taxable. Accountant review recommended."
 - Do NOT create a separate taxable line unless the invoice itself prints a taxable subtotal.
+
+#### Rule 4C: Wholesale/Grocery Purchases for Resale = Business COGS, NOT Personal
+**For retail/convenience store clients:** purchases from grocery wholesalers and warehouse stores (Costco, WinCo, Cash & Carry, Smart & Final, Restaurant Depot, Cost Less Food, etc.) are **presumed to be business inventory purchased for resale**.
+- **Do NOT exclude these as "personal grocery shopping."** A convenience store buying food at Costco or WinCo is restocking inventory.
+- Record under the appropriate COGS category (Grocery & Food Items for non-taxable food, or the correct taxable category).
+- If the receipt clearly contains items NOT sold in a convenience store (e.g., pet food, children's clothing, home furniture), flag those specific items — but still include the rest as COGS.
+- Only exclude the ENTIRE receipt if there is strong evidence it is 100% personal (e.g., receipt is in the owner's personal name with no business items at all).
 
 ### Rule 5: Reproducibility Check Before Finalizing
 - Before generating the report, verify: "If I ran this again with the same documents tomorrow, would every line item be identical?"
@@ -254,10 +271,7 @@ Do NOT add cash sales, lottery/scratcher sales, rebates, or "other income" witho
 - These are different from manufacturer buydowns (Rule 2A) — credit memos are direct refunds from the vendor, not promotional programs.
 - Record as a negative line item: `Vendor — Credit # — Date — ($X.XX)`
 
-### Rule 19: Wholesale/Grocery Purchases for Resale
-- For retail/convenience store clients, purchases from grocery wholesalers (Costco, WinCo, Cash & Carry, Smart & Final, Restaurant Depot, etc.) are **presumed to be business inventory for resale** unless clearly personal items.
-- Do NOT exclude these as "personal grocery shopping" without strong evidence (e.g., items clearly not sold in a convenience store like pet food, children's clothing).
-- If mixed personal/business items are suspected, include the receipt in COGS and flag: "May include personal items — accountant review recommended."
+### Rule 19: (Moved to Rule 4C above)
 
 ### Rule 20: Income Tax Payments Are NOT Business Expenses
 - Federal and state income tax payments (estimated quarterly or annual) for sole proprietors, S-corp shareholders, or partners are **NOT operating expenses** — they are personal tax obligations.
@@ -325,7 +339,8 @@ After generating the report, check whether the expected document types for the d
 
 If rent or payroll are missing, note prominently: "WARNING: No rent/payroll documented — these are typically the largest operating expenses. Net income is significantly overstated without them."
 
-### Rule 25: Pre-Report Integrity Checklist (REQUIRED — verify before building report)
+### Rule 25: Pre-Report Integrity Checklist (MANDATORY — verify EVERY item before building report)
+**You MUST go through each item below and confirm it passes. If any item fails, fix it before generating the report. Do NOT skip any item.**
 - Every revenue figure has a named source document and a printed dollar amount
 - Zero estimated or inferred amounts exist anywhere in the report
 - Every expense line cites: Vendor — Invoice # — Date — Exact Amount
@@ -343,10 +358,12 @@ If rent or payroll are missing, note prominently: "WARNING: No rent/payroll docu
 - Income tax payments excluded from expenses (Rule 20)
 - No double-counting: bank EFT payments not recorded alongside matching invoices (Rule 17)
 - Vendor credit memos recorded as negative COGS (Rule 18)
-- Wholesale/grocery receipts for resale included, not excluded as personal (Rule 19)
+- Wholesale/grocery receipts (Costco, WinCo, Cost Less) for resale included as COGS, NOT excluded as personal (Rule 4C)
 - Internal transfers and non-expense bank items excluded (Rule 21)
+- Lottery Stock COGS appears as a VISIBLE section with line items if lottery EFTs found in bank statement (Rule 11)
 - COGS noted as purchases-based, not inventory-adjusted (Rule 23)
 - Missing documents checklist completed — rent and payroll flagged prominently if missing (Rule 24)
+- ALL PITCO invoices processed independently — no sections missed from any invoice number
 - Running this again with the same files would produce identical totals
 
 ---
