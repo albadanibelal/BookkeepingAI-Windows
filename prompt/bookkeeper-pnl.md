@@ -88,18 +88,35 @@ Do NOT add cash sales, lottery/scratcher sales, rebates, or "other income" witho
 - Use the single bottom-line total from each invoice.
 - For invoices with returns/credits, use the **Net Due** figure printed on the document.
 
-### Rule 10: Operating Expenses — Period Matching
-- **Only include an expense if its service period or bill date falls within the reporting month.**
-- For utility bills (electric, gas, water): the bill's **service period end date** determines which month it belongs to. If the service period ends in a prior month, EXCLUDE it and flag: `[Vendor] — bill period [dates] — EXCLUDED: outside reporting period. Allocate to [correct month].`
-- For cash-basis reporting: include expenses when **paid**, not when incurred. Note the basis in the report header.
-- If accounting basis is unknown, default to **accrual** and flag for accountant confirmation.
+### Rule 10: Operating Expenses — Period Matching & Accounting Basis
 
-### Rule 10A: Borderline Date Items — Default EXCLUDE
-- If an invoice date, premium period, or service period falls **outside** the reporting month, **EXCLUDE from totals** by default — even if the payment was made during the reporting month (unless cash-basis accounting is confirmed).
-- Always include excluded items in the **Flagged & Excluded Items** section with the specific reason (e.g., "February 2026 premium", "invoice dated 02/02/2026", "credit dated 12/27/2025").
-- This applies to: future-month insurance premiums, future-dated invoices, prior-month credits, and any item where the service/billing period does not overlap the reporting month.
-- The accountant can add them back if the client uses cash-basis accounting — but the default is always **exclude and flag**.
-- This rule must be applied **consistently** across all runs: the same borderline item must always be excluded, never sometimes included and sometimes excluded.
+**Step 1 — Determine accounting basis from the documents:**
+- Small retail/convenience stores, sole proprietors, single-member LLCs, Schedule C filers, businesses with no accountant-prepared financial statements → **cash basis**
+- Businesses with accrual journals, A/R or A/P aging reports, CPA-prepared balance sheets, or multi-entity structures → **accrual basis**
+- **When in doubt, default to cash basis** (IRS default for small businesses under $25M revenue)
+- State the determined basis in the report header
+
+**Step 2 — Apply period rules based on the determined basis:**
+
+**Cash basis (default for small businesses):**
+- An expense belongs to the month it was **paid**, not when it was incurred
+- A December electric bill paid in January = **January expense** (include it)
+- An invoice dated in a prior month but paid in the reporting month = **include it**
+- A future-month invoice or premium not yet paid = **exclude it**
+- Key question: "Was the money spent during the reporting month?"
+
+**Accrual basis:**
+- An expense belongs to the month the service was provided or goods received
+- A December electric bill with service period ending in December = **December expense** (exclude from January)
+- Key question: "Was the service/goods received during the reporting month?"
+
+### Rule 10A: Items That Are ALWAYS Excluded Regardless of Basis
+- **Future-dated invoices** — invoice dated AFTER the reporting month (e.g., Feb 2026 invoice in a Jan 2026 report) → always exclude
+- **Personal expenses** — bills addressed to the owner personally (Medicare, personal insurance) → always exclude
+- **Non-invoices** — courtesy reminders, check reorder forms, marketing mailers → always exclude
+- **Items from 2+ months prior** — a November bill showing up in a January report is likely a data error regardless of basis → exclude and flag
+- Always list excluded items in **Flagged & Excluded Items** with the specific reason
+- This rule must be applied **consistently** across all runs: the same item must always be excluded
 
 ### Rule 11: Lottery/Scratcher Stock = COGS, Not Operating Expenses
 - Lottery scratcher purchase invoices = COGS (product purchased for resale), classified under **Lottery Stock COGS** subcategory.
