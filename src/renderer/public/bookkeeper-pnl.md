@@ -31,39 +31,65 @@ Before processing any financial data, determine the business type from the uploa
 - Revenue: POS sales, catering invoices, delivery platform payouts (DoorDash, UberEats, Grubhub)
 - COGS: **Food cost** — ingredients, produce, meat, dairy, dry goods, beverages for resale
 - COGS is NOT split into Taxable/Non-Taxable (restaurant food sales are generally taxable in CA)
-- Key expenses: Food suppliers, linen/uniform service, smallwares, equipment repair, grease trap, health permit
-- Special: Delivery platform fees and commissions = operating expense, NOT a reduction of revenue. Tips paid to employees = payroll expense.
-- Expected docs: Food supplier invoices, POS reports, health dept permits, delivery platform statements
+- Key expenses: Food suppliers, linen/uniform service, smallwares, equipment repair, grease trap, health permit, alcohol license renewal
+- **Tips:** Employer-paid tips, tip credits, and reported tips = **Payroll & Benefits**. Do NOT record tips as a separate expense category — they are part of total labor cost. If tip reporting documents are provided, note total tips in the report.
+- **Delivery platform fees:** DoorDash, UberEats, Grubhub commissions and fees = **Operating Expense (Delivery/Platform Fees)**, NOT a reduction of revenue. Record the gross payout as revenue and the fees as a separate expense.
+- **Food waste:** Only record if documented (waste log, spoilage report). Do NOT estimate food waste or add a percentage. If no waste documents exist, note in Missing Documents.
+- Expected docs: Food supplier invoices, POS reports, health dept permits, delivery platform statements, tip reports, alcohol license
 
 **Medical / Dental Clinic / Healthcare**
 - Revenue: Patient payments, insurance reimbursements (EOBs), copays
 - COGS: Medical/dental supplies, lab fees, imaging costs — these are **direct costs of services**
 - No CDTFA taxability split (medical services are exempt)
 - Key expenses: Medical supplies, lab fees, continuing education, malpractice insurance, medical waste disposal, EHR software
-- Special: Insurance write-offs (contractual adjustments) are NOT expenses — they are reductions of revenue. Record gross charges minus write-offs = net revenue.
-- Expected docs: EOBs, patient ledger, supply invoices, insurance statements
+- **Insurance reimbursements:** The EOB (Explanation of Benefits) shows: billed amount, allowed amount, insurance payment, patient responsibility. Revenue = **insurance payment + patient copay/coinsurance**. The difference between billed and allowed is a **contractual write-off — NOT an expense**. Do NOT record write-offs as an expense line.
+- **Unbilled services:** If patient ledger shows services rendered but not yet billed/collected, do NOT include as revenue. Only documented payments count (Rule 1).
+- Expected docs: EOBs, patient ledger, supply invoices, insurance statements, malpractice insurance
 
 **Auto Repair / Body Shop / Mechanic**
 - Revenue: Repair orders, parts sales, labor charges
 - COGS: **Parts and materials** purchased for jobs — tires, oil, filters, body panels, paint
-- Labor is NOT COGS — technician wages go under Payroll & Benefits
-- Key expenses: Shop supplies, equipment/lift maintenance, hazmat disposal, tool purchases, shop insurance
-- Special: Parts markup is embedded in revenue. Warranty claims from manufacturers = revenue or negative COGS depending on structure.
-- Expected docs: Parts supplier invoices, repair orders, vendor statements
+- **Labor is NOT COGS** — technician wages go under Payroll & Benefits regardless of whether they are "billable" hours
+- Key expenses: Shop supplies, equipment/lift maintenance, hazmat disposal, tool purchases, shop insurance, garage keeper's liability
+- **Warranty claims:** Manufacturer warranty reimbursements = revenue or negative COGS depending on structure. If unclear, record as Other Revenue and flag for accountant.
+- **Sublet/outsourced work:** Payments to other shops for specialized work (alignments, machine shop, towing) = COGS if directly tied to a customer job, or Operating Expense if general.
+- Expected docs: Parts supplier invoices, repair orders, vendor statements, warranty claim docs
 
 **Salon / Barbershop / Spa / Beauty**
 - Revenue: Service fees (cuts, color, treatments), product sales (retail)
 - COGS: **Products used on clients** (color, chemicals, treatment products) AND **retail products purchased for resale**
 - Key expenses: Booth rent (if renting to stylists), supplies, continuing education, licensing fees, laundry/towel service
-- Special: Booth rental income (if owner rents chairs to stylists) = **Other Revenue**, not service revenue. Stylists who rent booths are NOT employees.
-- Expected docs: Supplier invoices, POS reports, booth rental agreements
+- **Booth rental income:** If the salon owner rents chairs/stations to stylists = **Other Revenue**, not service revenue. Stylists who rent booths are independent contractors, NOT employees.
+- **Booth rent paid:** If the stylist is renting from someone else, booth rent = **Rent & Occupancy** expense.
+- Expected docs: Supplier invoices, POS reports, booth rental agreements, cosmetology license
 
-**Professional Services / Consulting / Freelance**
-- Revenue: Client invoices, retainer payments, project fees
+**Construction / Trades / Contractors**
+- Revenue: Progress billings, completed contract payments, change orders
+- COGS: **Materials** (lumber, concrete, electrical, plumbing supplies) + **subcontractor costs** directly tied to jobs
+- Direct labor for job-site workers can be COGS or Payroll depending on client's preference — flag for accountant
+- Key expenses: Tool purchases, equipment rental, vehicle/fuel, permits, bonding/insurance, dump fees
+- **Job costing:** If documents reference specific job numbers or project names, group COGS by job when possible. Otherwise record as general COGS.
+- **Retainage:** Retainage held back by the general contractor = revenue earned but not yet received. Record as revenue only when the retainage document shows the amount was billed. Do NOT estimate unbilled retainage.
+- **Progress billing:** Each progress invoice is revenue when billed. Do NOT wait until project completion.
+- Expected docs: Material supplier invoices, subcontractor invoices, progress billing statements, permit receipts
+
+**E-commerce / Online Retail**
+- Revenue: Platform payouts (Amazon, Shopify, Etsy, eBay), direct website sales (Stripe, PayPal)
+- COGS: **Products purchased for resale** + **shipping supplies** (boxes, labels, packing materials)
+- **Shipping costs:** Outbound shipping paid to carriers (USPS, UPS, FedEx) for customer orders = **COGS (Shipping/Fulfillment)**, not operating expense. It is a direct cost of the sale.
+- **Platform fees:** Amazon referral fees, Shopify subscription, Etsy listing/transaction fees, PayPal processing fees = **Operating Expense (Platform/Marketplace Fees)**. Do NOT net them against revenue.
+- **Returns/refunds:** E-commerce has high return volume. Each refund = **negative revenue**, not an expense (Rule 15). If the platform statement shows net payouts after refunds, use that as revenue and note gross vs net.
+- **FBA/fulfillment fees:** Amazon FBA fees, third-party fulfillment warehouse fees = **Operating Expense (Fulfillment Fees)**.
+- Expected docs: Platform payout reports, supplier invoices, shipping carrier invoices/receipts, payment processor statements
+
+**Professional Services / Consulting / Freelance / Law Office**
+- Revenue: Client invoices, retainer payments, project fees, hourly billing
 - COGS: Generally **none** — or minimal (subcontractor costs directly tied to client projects)
 - Most costs are operating expenses: office rent, software, professional development, travel
-- Special: Distinguish between subcontractor costs (COGS or Professional Services) and employee wages (Payroll)
-- Expected docs: Client invoices, bank statements, software subscriptions, subcontractor invoices
+- **Retainer accounting:** Retainer payments received = revenue when earned/applied, NOT when received (if accrual). On cash basis, record when received. Flag the basis used.
+- **Unbilled time / work-in-progress:** Do NOT include as revenue. Only billed and collected/invoiced amounts count. Note in Missing Documents if WIP tracking is expected.
+- **Subcontractor vs employee:** Payments to subcontractors (1099) who work on client projects = COGS. Payments to employees = Payroll. Do NOT mix these.
+- Expected docs: Client invoices, bank statements, software subscriptions, subcontractor invoices, retainer agreements
 
 ### How to Apply
 
@@ -282,6 +308,20 @@ After generating the report, check whether the expected document types for the d
 **Auto shop-specific additions:**
 - Parts supplier invoices
 - Shop insurance / garage keeper's liability
+
+**Salon-specific additions:**
+- Product supplier invoices (color, chemicals)
+- Booth rental agreements (if applicable)
+
+**Construction-specific additions:**
+- Material supplier invoices
+- Subcontractor invoices
+- Progress billing / draw statements
+
+**E-commerce-specific additions:**
+- Platform payout reports (Amazon, Shopify, Etsy)
+- Shipping carrier invoices
+- Supplier/inventory purchase invoices
 
 If rent or payroll are missing, note prominently: "WARNING: No rent/payroll documented — these are typically the largest operating expenses. Net income is significantly overstated without them."
 
