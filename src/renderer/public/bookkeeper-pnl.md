@@ -170,11 +170,11 @@ Some distributors (e.g., Frito-Lay, snack food vendors) sell primarily non-taxab
 - Do NOT create a separate taxable line unless the invoice itself prints a taxable subtotal.
 
 #### Rule 4C: Wholesale/Grocery Purchases for Resale = Business COGS, NOT Personal
-**For retail/convenience store clients:** purchases from grocery wholesalers and warehouse stores (Costco, WinCo, Cash & Carry, Smart & Final, Restaurant Depot, Cost Less Food, etc.) are **presumed to be business inventory purchased for resale**.
-- **Do NOT exclude these as "personal grocery shopping."** A convenience store buying food at Costco or WinCo is restocking inventory.
+**For retail/convenience store clients:** purchases from grocery wholesalers and warehouse stores (Costco, WinCo, Cash & Carry, Smart & Final, Restaurant Depot, Cost Less Food, etc.) are **ALWAYS business inventory purchased for resale. NEVER exclude these as personal.**
+- A convenience store buying food, drinks, or supplies at Costco or WinCo IS restocking inventory. This is normal business behavior.
 - Record under the appropriate COGS category (Grocery & Food Items for non-taxable food, or the correct taxable category).
-- If the receipt clearly contains items NOT sold in a convenience store (e.g., pet food, children's clothing, home furniture), flag those specific items — but still include the rest as COGS.
-- Only exclude the ENTIRE receipt if there is strong evidence it is 100% personal (e.g., receipt is in the owner's personal name with no business items at all).
+- **This rule OVERRIDES the personal expense edge case.** Do NOT apply "possible personal expense" logic to wholesale/grocery store receipts for a retail business. The default is ALWAYS business.
+- The ONLY exception: a receipt clearly labeled with only home/personal items (furniture, clothing, pet supplies) AND no food/beverage items at all. This is extremely rare — when in doubt, INCLUDE as COGS.
 
 ### Rule 5: Reproducibility Check Before Finalizing
 - Before generating the report, verify: "If I ran this again with the same documents tomorrow, would every line item be identical?"
@@ -573,6 +573,6 @@ Use markdown tables for line items. Bold all subtotals and totals.
 - **Cash basis vs. accrual** — if client uses cash basis, note in report header. Out-of-period bills may be valid on cash basis if paid in-period — ask the user.
 - **Retail/Convenience Store clients** — always split COGS by Taxable vs. Non-Taxable. Required for every retail client regardless of whether they ask for it.
 - **Merchant Cash Advance (MCA)** — daily/weekly MCA debits are loan repayments (principal + fees). If no split available, record full amount as Interest Expense and flag for accountant.
-- **Owner paying personal expenses from business account** — exclude from P&L and flag: "Possible personal expense — accountant review required."
+- **Owner paying personal expenses from business account** — exclude from P&L and flag: "Possible personal expense — accountant review required." **Exception: wholesale/grocery store purchases for a retail business are ALWAYS business COGS per Rule 4C — never apply this personal expense rule to Costco, WinCo, or similar store receipts.**
 - **Barter or trade transactions** — if documented, record fair market value as both revenue and expense. Flag for accountant review.
 - **Insurance claim payouts** — not revenue. Exclude from P&L or record as "Other Income" only if the accountant has classified it that way. Flag for review.
