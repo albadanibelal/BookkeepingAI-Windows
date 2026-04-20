@@ -1,6 +1,6 @@
 {
   "name": "bookkeepingai",
-  "version": "1.2.2",
+  "version": "1.2.3",
   "description": "BookkeepingAI — Profit & Loss report agent",
   "main": "electron/main.js",
   "scripts": {
@@ -22,7 +22,10 @@
     ],
     "win": {
       "target": [
-        "nsis"
+        {
+          "target": "nsis",
+          "arch": ["x64"]
+        }
       ],
       "icon": "assets/icon.png"
     },
@@ -30,6 +33,10 @@
       "oneClick": false,
       "perMachine": true,
       "allowToChangeInstallationDirectory": true,
+      "shortcutName": "BookkeepingAI",
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "runAfterFinish": true,
       "artifactName": "${productName}-Setup-${version}.${ext}"
     },
     "publish": {
