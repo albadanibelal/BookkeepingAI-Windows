@@ -19,6 +19,7 @@ export function useChatViewModel() {
   const [showSettings, setShowSettings] = useState(false);
 
   const conversationHistory = useRef<AnthropicMessage[]>([]);
+  const chatSession = useRef(0);
 
   // API key is handled by Cloudflare proxy — app just needs a placeholder
   const effectiveAPIKey = 'proxy-managed';
@@ -50,6 +51,7 @@ You can also type any bookkeeping question in the message box below.
   // Add files
   const addFiles = useCallback(
     async (fileInfos: Array<{ name: string; data: string }>) => {
+      const session = chatSession.current;
       for (const fileInfo of fileInfos) {
         const ext = fileInfo.name.split('.').pop()?.toLowerCase() ?? '';
         const mimeType = getMimeType(fileInfo.name);
@@ -85,12 +87,14 @@ You can also type any bookkeeping question in the message box below.
               effectiveAPIKey
             );
 
+            if (chatSession.current !== session) return;
             setUploadedFiles((prev) =>
               prev.map((f) =>
                 f.id === file.id ? { ...f, fileId, isUploading: false } : f
               )
             );
           } catch (error: any) {
+            if (chatSession.current !== session) return;
             // Fall back to base64 inline (no fileId, will use base64 in fileToContent)
             setUploadedFiles((prev) =>
               prev.map((f) =>
@@ -181,6 +185,7 @@ You can also type any bookkeeping question in the message box below.
   // Generate PDF from report
   const handleGeneratePDF = useCallback(
     async (markdown: string, sourceFiles: string[]) => {
+      const session = chatSession.current;
       const progressId = genId();
       setMessages((prev) => [
         ...prev,
@@ -218,6 +223,8 @@ Source files: ${sourceFiles.join(', ')}`;
             effectiveAPIKey,
             8192
           );
+
+          if (chatSession.current !== session) return;
 
           let clean = jsonReply
             .replace(/```json/gi, '')
@@ -306,6 +313,7 @@ Source files: ${sourceFiles.join(', ')}`;
           }
           return;
         } catch (error: any) {
+          if (chatSession.current !== session) return;
           if (error.message?.toLowerCase().includes('rate limit') && attempt < maxAttempts) {
             setMessages((prev) =>
               prev.map((m) =>
@@ -315,6 +323,7 @@ Source files: ${sourceFiles.join(', ')}`;
               )
             );
             await new Promise((r) => setTimeout(r, 65000));
+            if (chatSession.current !== session) return;
             continue;
           }
 
@@ -334,6 +343,7 @@ Source files: ${sourceFiles.join(', ')}`;
 
   // Core function to process files and send to API
   const sendMessageWithFiles = useCallback(async (files: UploadedFile[], userText = '') => {
+    const session = chatSession.current;
 
     setIsSending(true);
     setUploadedFiles([]);
@@ -383,6 +393,8 @@ Source files: ${sourceFiles.join(', ')}`;
         effectiveAPIKey
       );
 
+      if (chatSession.current !== session) return;
+
       conversationHistory.current.push({ role: 'user', content: allContent });
       conversationHistory.current.push({
         role: 'assistant',
@@ -411,6 +423,7 @@ Source files: ${sourceFiles.join(', ')}`;
       // Always attempt PDF generation after document processing
       handleGeneratePDF(reply, files.map((f) => f.name));
     } catch (error: any) {
+      if (chatSession.current !== session) return;
       setMessages((prev) => [
         ...prev.filter((m) => m.id !== analyzeProgressId),
         {
@@ -422,6 +435,7 @@ Source files: ${sourceFiles.join(', ')}`;
       ]);
     }
 
+    if (chatSession.current !== session) return;
     setIsSending(false);
   }, [effectiveAPIKey, fileToContent, handleGeneratePDF]);
 
@@ -438,10 +452,13 @@ Source files: ${sourceFiles.join(', ')}`;
     }
 
     // Text only
+    const session = chatSession.current;
     setIsSending(true);
     setInputText('');
 
     const systemPrompt = await getSystemPromptWithVendors();
+
+    if (chatSession.current !== session) return;
 
     setMessages((prev) => [
       ...prev,
@@ -458,6 +475,8 @@ Source files: ${sourceFiles.join(', ')}`;
         effectiveAPIKey
       );
 
+      if (chatSession.current !== session) return;
+
       conversationHistory.current.push({
         role: 'assistant',
         content: [{ type: 'text', text: reply }],
@@ -467,6 +486,7 @@ Source files: ${sourceFiles.join(', ')}`;
         { id: genId(), role: 'assistant', content: reply, timestamp: new Date() },
       ]);
     } catch (error: any) {
+      if (chatSession.current !== session) return;
       setMessages((prev) => [
         ...prev,
         {
@@ -478,6 +498,7 @@ Source files: ${sourceFiles.join(', ')}`;
       ]);
     }
 
+    if (chatSession.current !== session) return;
     setIsSending(false);
   }, [inputText, uploadedFiles, effectiveAPIKey, sendMessageWithFiles]);
 
@@ -499,8 +520,12 @@ Source files: ${sourceFiles.join(', ')}`;
 
   // New chat
   const newChat = useCallback(() => {
+    chatSession.current += 1;
     conversationHistory.current = [];
+    autoSendTriggered.current = false;
     setUploadedFiles([]);
+    setInputText('');
+    setIsSending(false);
     onAppear();
   }, [onAppear]);
 
