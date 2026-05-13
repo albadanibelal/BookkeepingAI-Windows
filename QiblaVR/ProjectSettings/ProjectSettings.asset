@@ -1,0 +1,412 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!129 &1
+PlayerSettings:
+  m_ObjectHideFlags: 0
+  serializedVersion: 24
+  productGUID: a1b2c3d4e5f678901234567890abcdef
+  AndroidProfiler: 0
+  AndroidFilterTouchesWhenObscured: 0
+  AndroidEnableSustainedPerformanceMode: 1
+  defaultScreenOrientation: 4
+  targetDevice: 2
+  useOnDemandResources: 0
+  accelerometerFrequency: 60
+  companyName: YourCompanyName
+  productName: QiblaVR
+  defaultCursor: {fileID: 0}
+  cursorHotspot: {x: 0, y: 0}
+  m_SplashScreenBackgroundColor: {r: 0.13, g: 0.12, b: 0.13, a: 1}
+  m_ShowUnitySplashScreen: 0
+  m_ShowUnitySplashLogo: 0
+  m_VirtualRealitySplashScreen: {fileID: 0}
+  m_HolographicTrackingLossScreen: {fileID: 0}
+  defaultScreenWidth: 1024
+  defaultScreenHeight: 768
+  defaultScreenWidthWeb: 960
+  defaultScreenHeightWeb: 600
+  m_StereoRenderingPath: 2
+  m_ActiveColorSpace: 1
+  m_MTRendering: 1
+  mipStripping: 1
+  numberOfMipsStripped: 0
+  stackTraceTypes: 010000000100000001000000010000000100000001000000
+  iosShowActivityIndicatorOnLoading: -1
+  androidShowActivityIndicatorOnLoading: -1
+  displayResolutionDialog: 0
+  iosAppInBackgroundBehavior: 0
+  iosExtendedListenerSupport: 0
+  androidDefaultWindowWidth: 0
+  androidDefaultWindowHeight: 0
+  androidDefaultWindowFullscreen: 1
+  androidMaxAspectRatio: 2.1
+  applicationIdentifier:
+    Android: com.yourcompany.qiblavr
+  buildNumber:
+    Android: 1
+  AndroidBundleVersionCode: 1
+  AndroidMinSdkVersion: 32
+  AndroidTargetSdkVersion: 33
+  AndroidPreferredInstallLocation: 1
+  aotOptions:
+  stripEngineCode: 1
+  iPhoneStrippingLevel: 0
+  iPhoneScriptCallOptimization: 0
+  ForceInternetPermission: 0
+  ForceSDCardPermission: 0
+  CreateWallpaper: 0
+  APKExpansionFiles: 0
+  keepLoadedShadersAlive: 0
+  StripUnusedMeshComponents: 1
+  VertexChannelCompressionMask: 4054
+  iPhoneSdkVersion: 988
+  iOSTargetOSVersionString: 12.0
+  tvOSSdkVersion: 0
+  tvOSRequireExtendedGameController: 0
+  tvOSTargetOSVersionString: 12.0
+  uIPrerenderedIcon: 0
+  uIRequiresPersistentWiFi: 0
+  uIRequiresFullScreen: 1
+  uIStatusBarHidden: 1
+  uIExitOnSuspend: 0
+  uIStatusBarStyle: 0
+  appleTVSplashScreen: {fileID: 0}
+  tvOSSmallIconLayers: []
+  tvOSLargeIconLayers: []
+  tvOSTopShelfImageLayers: []
+  tvOSTopShelfImageWideLayers: []
+  iOSLaunchScreenType: 0
+  iOSLaunchScreenPortrait: {fileID: 0}
+  iOSLaunchScreenLandscape: {fileID: 0}
+  iOSLaunchScreenBackgroundColor:
+    serializedVersion: 2
+    rgba: 4278190080
+  iOSLaunchScreenFillPct: 100
+  iOSLaunchScreenSize: 100
+  iOSLaunchScreenCustomXibPath:
+  iOSLaunchScreeniPadType: 0
+  iOSLaunchScreeniPadImage: {fileID: 0}
+  iOSLaunchScreeniPadBackgroundColor:
+    serializedVersion: 2
+    rgba: 4278190080
+  iOSLaunchScreeniPadFillPct: 100
+  iOSLaunchScreeniPadSize: 100
+  iOSLaunchScreeniPadCustomXibPath:
+  iOSUseLaunchScreenStoryboard: 0
+  iOSLaunchScreenCustomStoryboardPath:
+  iOSLaunchScreeniPadCustomStoryboardPath:
+  iOSDeviceRequirements: []
+  iOSURLSchemes: []
+  iOSBackgroundModes: 0
+  iOSMetalForceHardShadows: 0
+  metalEditorSupport: 1
+  metalAPIValidation: 1
+  iOSRenderExtraFrameOnPause: 0
+  iosCopyPluginsCodeInsteadOfSymlink: 0
+  appleDeveloperTeamID:
+  iOSManualSigningProvisioningProfileID:
+  tvOSManualSigningProvisioningProfileID:
+  iOSManualSigningProvisioningProfileType: 0
+  tvOSManualSigningProvisioningProfileType: 0
+  appleEnableAutomaticSigning: 0
+  iOSRequireARKit: 0
+  iOSAutomaticallyDetectAndAddCapabilities: 1
+  appleEnableProMotion: 0
+  shaderPrecisionModel: 0
+  AndroidSplashScreenScale: 0
+  androidSplashScreen: {fileID: 0}
+  AndroidKeystoreName:
+  AndroidKeyaliasName:
+  AndroidBuildApkPerCpuArchitecture: 0
+  AndroidTVCompatibility: 0
+  AndroidIsGame: 1
+  AndroidEnableARCore: 0
+  AndroidMaxAspectRatio: 2.1
+  androidEnableBanner: 1
+  m_AndroidBanners:
+  - width: 320
+    height: 180
+    banner: {fileID: 0}
+  androidGamepadSupportLevel: 0
+  AndroidTargetArchitectures: 1
+  AndroidTargetDevices: 0
+  resizableWindow: 0
+  useMacAppStoreValidation: 0
+  macAppStoreCategory: public.app-category.games
+  gpuSkinning: 1
+  xboxPIXTextureCapture: 0
+  xboxEnableAvatar: 0
+  xboxEnableKinect: 0
+  xboxEnableKinectAutoTracking: 0
+  xboxEnableFitness: 0
+  visibleInBackground: 1
+  allowFullscreenSwitch: 1
+  fullscreenMode: 1
+  xboxSpeechDB: 0
+  xboxEnableHeadOrientation: 0
+  xboxEnableGuest: 0
+  xboxEnableEntitlementUsage: 0
+  xboxSocialNetworkingUsage: 0
+  ps4NPAgeRating: 12
+  ps4NPTitleSecret:
+  ps4NPTrophyPackPath:
+  ps4ParentalLevel: 11
+  ps4ContentID: ED1633-NPXX51362_00-0000000000000000
+  ps4Category: 0
+  ps4MasterVersion: 01.00
+  ps4AppVersion: 01.00
+  ps4AppType: 0
+  ps4ParamSfxPath:
+  ps4VideoOutPixelFormat: 0
+  ps4VideoOutInitialWidth: 1920
+  ps4VideoOutBaseModeInitialWidth: 1920
+  ps4VideoOutReprojectionRate: 60
+  ps4PronunciationXMLPath:
+  ps4PronunciationSIGPath:
+  ps4BackgroundImagePath:
+  ps4StartupImagePath:
+  ps4StartupImagesFolder:
+  ps4SaveDataImagePath:
+  ps4SdkOverride:
+  ps4ShareFilePath:
+  ps4ShareOverlayImagePath:
+  ps4PrivacyGuardImagePath:
+  ps4ExtraSceSysFile:
+  ps4PlayTogetherPlayerCount: 0
+  ps4EnterButtonAssignment: 1
+  ps4ApplicationParam1: 0
+  ps4ApplicationParam2: 0
+  ps4ApplicationParam3: 0
+  ps4ApplicationParam4: 0
+  ps4DownloadDataSize: 0
+  ps4GarlicHeapSize: 160
+  ps4ProGarlicHeapSize: 512
+  playerPrefsMaxSize: 32768
+  ps4Passcode: frAQBc8Wsa1xVPfvJcrgRYwTiizs2trQ
+  ps4pnSessions: 1
+  ps4pnPresence: 1
+  ps4pnFriends: 1
+  ps4pnGameCustomData: 1
+  playerPrefsSupport: 0
+  enableApplicationExit: 0
+  resetResolutionOnWindowResize: 0
+  ps4UseResolutionFallback: 0
+  restrictedAudioUsageRights: 0
+  ps4ReprojectionSupport: 0
+  ps4UseAudio3dBackend: 0
+  ps4SocialScreenEnabled: 0
+  ps4ScriptOptimizationLevel: 0
+  ps4Audio3dVirtualSpeakerCount: 14
+  ps4attribCpuUsage: 0
+  ps4PatchPkgPath:
+  ps4PatchLatestPkgPath:
+  ps4PatchChangeinfoPath:
+  ps4PatchDayOne: 0
+  ps4attribUserManagement: 0
+  ps4attribMoveSupport: 0
+  ps4attrib3DSupport: 0
+  ps4attribShareSupport: 0
+  ps4attribExclusiveVR: 0
+  ps4disableAutoHideSplash: 0
+  ps4videoRecordingFeaturesUsed: 0
+  ps4contentSearchFeaturesUsed: 0
+  ps4CompatibilityPS5: 0
+  ps4AllowPS5Detection: 0
+  ps4GPU800MHz: 1
+  ps4attribEyeToEyeDistanceSettingVR: 0
+  ps4IncludedModules: []
+  monoEnv:
+  psp2Splashimage: {fileID: 0}
+  psp2NPTrophyPackPath:
+  psp2NPSommunicationID:
+  psp2NPCommsPassphrase:
+  psp2NPCommsSig:
+  psp2ParamSfxPath:
+  psp2ManualPath:
+  psp2LiveArea_Main: {fileID: 0}
+  psp2LiveArea_Gate: {fileID: 0}
+  psp2LiveArea_Footer: {fileID: 0}
+  psp2PatchChangeInfoPath:
+  psp2PatchOrigContentID:
+  psp2TVBootMode: 0
+  psp2EnterButtonAssignment: 2
+  psp2AcquireBGM: 0
+  psp2PrivacyGuardEnabled: 0
+  psp2SystemBootFile:
+  psp2UseLibLocation: 0
+  psp2NpContentId:
+  psp2DRMType: 0
+  psp2StorageType: 0
+  psp2MediaCapacity: 0
+  psp2DLCConfigPath:
+  psp2ThumbnailPath:
+  psp2BackgroundPath:
+  psp2SoundPath:
+  psp2TrophyCommId:
+  psp2TrophyPackagePath:
+  psp2PackagedResourcesPath:
+  psp2PatchPkgPath:
+  psp2PatchLatestPkgPath:
+  psp2PatchChangeinfoPath:
+  psp2MasterVersion: 01.00
+  psp2AppVersion: 01.00
+  psp2AppCategory: 0
+  psp2HiddenAssetProtectionEnabled: 0
+  psp2ContentProtectionEnabled: 0
+  psp2UpgradableApplication: 0
+  psp2ApplicationParam1: 0
+  psp2ApplicationParam2: 0
+  psp2ApplicationParam3: 0
+  psp2ApplicationParam4: 0
+  psp2DownloadDataSize: 0
+  psp2GarlicHeapSize: 160
+  psp2NpTitleDatPath:
+  psp2NpCommunicationsId:
+  psp2NpCommsSig:
+  psp2NpIconPath:
+  psp2NpTrophyPackagePath:
+  psp2InputDevice: 0
+  psp2ScreenOrientation: 0
+  psp2PowerMode: 0
+  psp2AcquireBGMCapability: 0
+  psp2KeepAspectRatio: 1
+  Ps4SocialScreenEnabled: 0
+  wiiUSaveBoostMode: 0
+  wiiUGamePadMic: 0
+  wiiUCommonSaveSize: 10240
+  wiiUAccountSaveSize: 10240
+  wiiUDlcBundleSize: 10240
+  wiiUTVStartupScreen: 0
+  wiiUSplash: {fileID: 0}
+  wiiUBootMovie: {fileID: 0}
+  wiiUBootLogoTexture: {fileID: 0}
+  wiiULogoSoundPath:
+  wiiUBootMoviePath:
+  wiiUBootSoundPath:
+  n3dsUseExtSaveData: 0
+  n3dsCommCompatMode: 0
+  n3dsExtSaveDataNumber: 0x00000000
+  n3dsProductCode:
+  n3dsApplicationId: 0xFF3FF
+  n3dsUseRomFs: 0
+  n3dsCompressStaticMem: 0
+  n3dsTargetPlatform: 0
+  n3dsSaveDataJournalSize: 256
+  n3dsStackSize: 131072
+  n3dsTargetFPS: 0
+  n3dsLogoStyle: 0
+  n3dsTitle:
+  n3dsDisableStereoscopicView: 0
+  n3dsEnableSharedListOBJ: 0
+  n3dsUseHeapMemory: 0
+  XboxOneProductId:
+  XboxOneUpdateKey:
+  XboxOneSandboxId:
+  XboxOneContentId:
+  XboxOneTitleId:
+  XboxOneSCId:
+  XboxOneGameOsOverridePath:
+  XboxOnePackagingOverridePath:
+  XboxOnePackageEncryption: 0
+  XboxOnePackageUpdateGranularity: 4
+  XboxOneDescription:
+  XboxOneLanguage:
+  - 0
+  XboxOneCapability: []
+  XboxOneGameRating: {}
+  XboxOneIsContentPackage: 0
+  XboxOneEnhancedXboxCompatibilityMode: 0
+  XboxOneEnableGPUVariability: 1
+  XboxOneSockets: {}
+  XboxOneSplashScreen: {fileID: 0}
+  XboxOneAllowedProductIds: []
+  XboxOnePersistentLocalStorageSize: 0
+  XboxOneXTitleMemory: 8
+  XboxOneOverrideIdentityName:
+  vrDeviceSplashScreen: {fileID: 0}
+  defaultScreenOrientation: 4
+  virtualRealitySupported: 1
+  stereoRenderingPath: 2
+  occulusRenderMode: 0
+  hololensRenderMode: 0
+  hololensUserPresence: 0
+  VRSettings:
+    cardboard:
+      depthFormat: 0
+      enableTransitionView: 0
+    daydream:
+      depthFormat: 0
+      useSustainedPerformanceMode: 0
+      enableVideoLayer: 0
+      useProtectedVideoMemory: 0
+      minimumSupportedHeadTracking: 0
+      maximumSupportedHeadTracking: 1
+    hololens:
+      depthFormat: 1
+      depthBufferSharingEnabled: 1
+    oculus:
+      sharedDepthBuffer: 1
+      dashSupport: 1
+      lowOverheadMode: 0
+      optimizeBufferDiscards: 0
+      phaseSync: 0
+      supportedHeadsets:
+      - serializedVersion: 3
+        m_Name: Quest3
+        m_Enabled: 1
+  openGLRequireES31: 0
+  openGLRequireES31AEP: 0
+  openGLRequireES32: 0
+  m_TemplateCustomTags: {}
+  mobileMTRendering:
+    Android: 1
+    iPhone: 1
+    tvOS: 1
+  m_BuildTargetBatching:
+  - m_BuildTarget: Standalone
+    m_Batching: 1
+  - m_BuildTarget: WebGL
+    m_Batching: 0
+  - m_BuildTarget: Android
+    m_Batching: 1
+  m_BuildTargetGraphics:
+  - m_BuildTarget: Android
+    m_GraphicsJobs: 0
+  m_BuildTargetShaderSettings: []
+  m_BuildTargetIcons: []
+  m_BuildTargetPlatformIcons: []
+  m_BuildTargetAllowDebugging: []
+  m_BuildTargetEnableVuforiaAR: []
+  m_BuildTargetNativeDecompression: []
+  m_BuildTargetEnableHSKP: []
+  m_BuildTargetHSKPMaxWorkGroupCount: []
+  m_BuildTargetMaxTextureSize: []
+  meshDeformation: 0
+  scriptingDefineSymbols:
+    Android: OVR_ANDROID_MRC
+  additionalCompilerArguments: {}
+  platformArchitecture:
+    Android: 1
+  scriptingBackend:
+    Android: 1
+  il2cppCompilerConfiguration:
+    Android: 1
+  managedStrippingLevel:
+    Android: 1
+  incrementalIl2cppBuild: {}
+  allowedThreadOwnershipAcquisitionFromBackgroundThreads: 0
+  additionalIl2CppArgs:
+  scriptingRuntimeVersion: 1
+  gcIncremental: 1
+  assemblyVersionValidation: 1
+  managedDebuggingEnabled: 0
+  allowUnsafeCode: 0
+  useDeterministicCompilation: 1
+  enableRoslynAnalyzers: 1
+  selectedPlatform: 0
+  additionalShaderChannels: 4
+  shaderGraphTargetTransferFunction: 0
+  virtualTexturingSupportEnabled: 0
+  insecureHttpOption: 0
+  forceSRGBBlit: 0
+  uploadClearedTextureDataAfterCreationFromScript: 0
