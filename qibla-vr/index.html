@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#000105" />
+    <meta name="color-scheme" content="dark" />
+    <meta name="description" content="Stand above the Earth and turn to face Makkah. A calm, immersive Qibla finder for Meta Quest." />
+    <title>Qibla</title>
+    <link rel="manifest" href="manifest.webmanifest" />
+    <link rel="icon" href="icons/icon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="icons/icon-192.png" />
+  </head>
+  <body>
+    <div id="stage"></div>
+
+    <main id="sheet" class="sheet glass" aria-live="polite">
+      <button id="collapse" class="grabber" aria-label="Collapse or expand"></button>
+      <p class="eyebrow">Qibla</p>
+      <h1 id="place">Finding you…</h1>
+      <p id="summary" class="summary"></p>
+      <div id="prayer" class="prayer" hidden></div>
+
+      <div class="actions">
+        <button id="enter-vr" class="btn primary" hidden>Enter VR</button>
+        <button id="enter-mr" class="btn" hidden>Mixed Reality</button>
+        <button id="use-compass" class="btn" hidden>Use Compass</button>
+      </div>
+      <p id="xr-note" class="note" hidden>Open this page on Meta Quest to step inside. Here, drag to look around.</p>
+
+      <details class="settings">
+        <summary>Location &amp; Prayer Times</summary>
+        <div class="row">
+          <input id="city" list="cities" placeholder="Search a city or enter lat, lon" autocomplete="off" />
+          <datalist id="cities"></datalist>
+          <button id="locate" class="btn small" aria-label="Use my location">Locate</button>
+        </div>
+        <label class="row field">
+          <span>Calculation</span>
+          <select id="method"></select>
+        </label>
+        <label class="row field switch">
+          <span>Hanafi Asr</span>
+          <input id="hanafi" type="checkbox" role="switch" />
+        </label>
+        <button id="view" class="btn small wide">Show globe</button>
+        <p class="note">Your location stays on this device. Nothing is sent anywhere.</p>
+      </details>
+    </main>
+
+    <div id="toast" class="toast" role="status"></div>
+    <script type="module">
+      // Dev only: /?emulate runs Meta's Immersive Web Emulator so you can try the
+      // VR flow (controllers, calibration, picking) without a headset.
+      const emulate = new URLSearchParams(location.search).get('emulate');
+      if (import.meta.env.DEV && emulate !== null) {
+        const { XRDevice, metaQuest3 } = await import('iwer');
+        const device = new XRDevice(metaQuest3);
+        device.installRuntime({ forceInstall: true });
+        device.position.set(0, 1.6, 0);
+        if (emulate !== 'headless') {
+          const { DevUI } = await import('@iwer/devui');
+          device.installDevUI(DevUI);
+        }
+        window.__device = device;
+      }
+      await import('./src/main.js');
+    </script>
+  </body>
+</html>
