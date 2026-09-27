@@ -5,3 +5,4 @@ assets_src/_page.html
 tools/node_modules/
 # Release signing key: never commit
 signing/
+shots/
